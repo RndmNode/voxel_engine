@@ -162,16 +162,13 @@ int main(void)
 
         // Buffers
         // -------
-        // init buffer and array obj
-        unsigned int buffer, VAO;
-        // generate buffer and array obj
-        // GLCall(glGenBuffers(1, &buffer));
+        // init array obj
+        unsigned int VAO;
+        // generate array obj
         GLCall(glGenVertexArrays(1, &VAO));
 
-        // bind buffer and array and define how to read the buffer data
+        // bind array and define how to read the buffer data
         GLCall(glBindVertexArray(VAO));
-        // GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-        // GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
         // Vertex Buffer
         VertexBuffer vb(positions, 4 * 2 * sizeof(float));
@@ -182,12 +179,6 @@ int main(void)
         // enable the attributes
         GLCall(glEnableVertexAttribArray(0));
         GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-
-        // buffer for indicies to draw multiple triangles
-        // unsigned int index_buffer_obj;
-        // GLCall(glGenBuffers(1, &index_buffer_obj));
-        // GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_obj));
-        // GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicies, GL_STATIC_DRAW));
 
         // Shaders
         // -------
@@ -250,7 +241,7 @@ int main(void)
         // optional: de-allocate all resources once they've outlived their purpose:
         // ------------------------------------------------------------------------
         GLCall(glDeleteVertexArrays(1, &VAO));
-        GLCall(glDeleteBuffers(1, &buffer));
+        // GLCall(glDeleteBuffers(1, &buffer));
         GLCall(glDeleteProgram(shader));
     }
 
