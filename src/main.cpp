@@ -10,6 +10,7 @@
 #include "renderer.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
+#include "vertex_array.h"
 
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -162,13 +163,6 @@ int main(void)
 
         // Buffers
         // -------
-        // init array obj
-        unsigned int VAO;
-        // generate array obj
-        GLCall(glGenVertexArrays(1, &VAO));
-
-        // bind array and define how to read the buffer data
-        GLCall(glBindVertexArray(VAO));
 
         // Vertex Buffer
         VertexBuffer vb(positions, 4 * 2 * sizeof(float));
@@ -176,9 +170,10 @@ int main(void)
         // Index Buffer
         IndexBuffer ib(indicies, 6);
 
-        // enable the attributes
-        GLCall(glEnableVertexAttribArray(0));
-        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+        VertexArray va;
+        VertexBufferLayout layout;
+        layout.Push<float>(2);
+        va.AddBuffer(vb, layout);
 
         // Shaders
         // -------
@@ -216,7 +211,8 @@ int main(void)
             GLCall(glUniform4f(location, r, 0.2f, 0.7f, 1.0f));
 
             // vertex array
-            glBindVertexArray(VAO);
+            // glBindVertexArray(VAO);
+            va.Bind();
             
             // index buffer
             ib.Bind();
@@ -240,7 +236,7 @@ int main(void)
 
         // optional: de-allocate all resources once they've outlived their purpose:
         // ------------------------------------------------------------------------
-        GLCall(glDeleteVertexArrays(1, &VAO));
+        // GLCall(glDeleteVertexArrays(1, &VAO));
         // GLCall(glDeleteBuffers(1, &buffer));
         GLCall(glDeleteProgram(shader));
     }
