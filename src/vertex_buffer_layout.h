@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <GL/glew.h>
-// #include "glad.c"
 
 #include "renderer.h"
 

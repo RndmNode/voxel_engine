@@ -11,6 +11,7 @@
 #include "vertex_buffer.h"
 #include "index_buffer.h"
 #include "vertex_array.h"
+#include "vertex_buffer_layout.h"
 #include "shader.h"
 
 // Resize window
@@ -90,6 +91,8 @@ int main(void)
         ib.Unbind();
         shader.Unbind();
 
+        Renderer renderer;
+
         float r = 0.0f;
         float increment = 0.05f;
         // render loop
@@ -101,21 +104,17 @@ int main(void)
             processInput(window);
 
             /* Render here */
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            renderer.Clear();
 
             // shader
             shader.Bind();
             shader.SetUniform4f("u_Color", r, 0.2f, 0.7f, 1.0f);
 
-            // vertex array
-            // glBindVertexArray(VAO);
-            va.Bind();
-            
-            // index buffer
-            ib.Bind();
+            // draw
+            renderer.Draw(va, ib, shader);
 
             // draw
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);)
+            // GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);)
 
             // change red value of color that is fed into the uniform 'u_Color'
             if (r > 1.0f)
@@ -127,12 +126,12 @@ int main(void)
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
-            GLCall(glfwSwapBuffers(window));
-            GLCall(glfwPollEvents());
+            glfwSwapBuffers(window);
+            glfwPollEvents();
         }
     }
 
-    GLCall(glfwTerminate());
+    glfwTerminate();
     return 0;
 }
 

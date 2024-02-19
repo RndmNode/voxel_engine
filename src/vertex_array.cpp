@@ -1,5 +1,6 @@
 #include "vertex_array.h"
 #include "renderer.h"
+#include "vertex_buffer_layout.h"
 
 VertexArray::VertexArray()
 {
