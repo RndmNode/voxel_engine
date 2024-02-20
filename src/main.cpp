@@ -85,7 +85,6 @@ int main(void)
         shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f);
 
         // reset buffers
-        // GLCall(glBindVertexArray(0));
         va.Unbind();
         vb.Unbind();
         ib.Unbind();
@@ -112,9 +111,6 @@ int main(void)
 
             // draw
             renderer.Draw(va, ib, shader);
-
-            // draw
-            // GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);)
 
             // change red value of color that is fed into the uniform 'u_Color'
             if (r > 1.0f)
