@@ -13,6 +13,7 @@
 #include "vertex_array.h"
 #include "vertex_buffer_layout.h"
 #include "shader.h"
+#include "Texture.h"
 
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -90,6 +91,15 @@ int main(void)
         ib.Unbind();
         shader.Unbind();
 
+        // Textures
+        // --------
+        std::string path = "res/textures/space.png";
+        Texture texture(path);
+        texture.Bind();
+        shader.SetUniform1i("u_Texture", 0);
+
+        // Renderer
+        // --------
         Renderer renderer;
 
         float r = 0.0f;
