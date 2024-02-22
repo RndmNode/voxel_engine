@@ -56,8 +56,8 @@ int main(void)
         // --------
         float positions[] = {
             -0.5f, -0.5f, 0.0f, 0.0f, // 0
-            0.5f, -0.5f,  1.0f, 0.0f, // 1
-            0.5f,  0.5f,  1.0f, 1.0f, // 2
+             0.5f, -0.5f, 1.0f, 0.0f, // 1
+             0.5f,  0.5f, 1.0f, 1.0f, // 2
             -0.5f,  0.5f, 0.0f, 1.0f, // 3
         };
         unsigned int indicies[] = {
@@ -122,7 +122,8 @@ int main(void)
 
             // shader
             shader.Bind();
-            shader.SetUniform4f("u_Color", r, 0.2f, 0.7f, 1.0f);
+            // shader.SetUniform4f("u_Color", r, 0.2f, 0.7f, 1.0f);
+            // shader.SetUniform1i("u_Texture", 0);
 
             // draw
             renderer.Draw(va, ib, shader);
