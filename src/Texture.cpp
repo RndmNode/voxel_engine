@@ -9,7 +9,7 @@ Texture::Texture(std::string& path)
 {
     // set flip and load texture
     stbi_set_flip_vertically_on_load(1);
-    stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+    m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
     
     // generate textures and bind
     GLCall(glGenTextures(1, &m_RendererID));
