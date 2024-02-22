@@ -55,20 +55,24 @@ int main(void)
         // Triangle
         // --------
         float positions[] = {
-            -0.5f, -0.5f, // 0
-            0.5f, -0.5f, // 1
-            0.5f,  0.5f, // 2
-            -0.5f,  0.5f, // 3
+            -0.5f, -0.5f, 0.0f, 0.0f, // 0
+            0.5f, -0.5f,  1.0f, 0.0f, // 1
+            0.5f,  0.5f,  1.0f, 1.0f, // 2
+            -0.5f,  0.5f, 0.0f, 1.0f, // 3
         };
         unsigned int indicies[] = {
             0, 1, 2,
             2, 3, 0
         };
 
+        // Enable blending
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
         // Buffers
         // -------
         // Vertex Buffer
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
         // Index Buffer
         IndexBuffer ib(indicies, 6);
@@ -76,6 +80,7 @@ int main(void)
         // Vertex Array
         VertexArray va;
         VertexBufferLayout layout;
+        layout.Push<float>(2);
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
@@ -85,18 +90,18 @@ int main(void)
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f);
 
-        // reset buffers
-        va.Unbind();
-        vb.Unbind();
-        ib.Unbind();
-        shader.Unbind();
-
         // Textures
         // --------
         std::string path = "res/textures/space.png";
         Texture texture(path);
         texture.Bind();
         shader.SetUniform1i("u_Texture", 0);
+        
+        // reset buffers
+        va.Unbind();
+        vb.Unbind();
+        ib.Unbind();
+        shader.Unbind();
 
         // Renderer
         // --------
