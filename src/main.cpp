@@ -38,7 +38,9 @@ int main(void)
     #endif
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Test", NULL, NULL);
+    int w_width  = 960;
+    int w_height = 540;
+    window = glfwCreateWindow(w_width, w_height, "Test", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -58,10 +60,10 @@ int main(void)
         // Triangle
         // --------
         float positions[] = {
-            -0.5f, -0.5f, 0.0f, 0.0f, // 0
-             0.5f, -0.5f, 1.0f, 0.0f, // 1
-             0.5f,  0.5f, 1.0f, 1.0f, // 2
-            -0.5f,  0.5f, 0.0f, 1.0f, // 3
+            100.0f, 100.0f, 0.0f, 0.0f, // 0
+            200.0f, 100.0f, 1.0f, 0.0f, // 1
+            200.0f, 200.0f, 1.0f, 1.0f, // 2
+            100.0f, 200.0f, 0.0f, 1.0f, // 3
         };
         unsigned int indicies[] = {
             0, 1, 2,
@@ -87,22 +89,27 @@ int main(void)
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
-        // Projection Matrix
-        glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+        // Matricies
+        // ---------
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 0.0f));                 // Model Matrix
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f));                   // View Matrix
+        glm::mat4 projection = glm::ortho(0.0f, float(w_width), 0.0f, float(w_height), -1.0f, 1.0f);        // Projection Matrix
+
+        glm::mat4 mvp = projection * view * model;
 
         // Shaders
         // -------
         Shader shader("res/shaders/test.shader");
         shader.Bind();
-        shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f);
-        shader.SetUniformMat4f("u_MVP", projection);
+        shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f); // Set Color
+        shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
 
         // Textures
         // --------
         std::string path = "res/textures/space.png";
         Texture texture(path);
         texture.Bind();
-        shader.SetUniform1i("u_Texture", 0);
+        shader.SetUniform1i("u_Texture", 0); // Set Texture
         
         // reset buffers
         va.Unbind();
