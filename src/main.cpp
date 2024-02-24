@@ -15,6 +15,9 @@
 #include "shader.h"
 #include "Texture.h"
 
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
+
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -84,11 +87,15 @@ int main(void)
         layout.Push<float>(2);
         va.AddBuffer(vb, layout);
 
+        // Projection Matrix
+        glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
         // Shaders
         // -------
         Shader shader("res/shaders/test.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f);
+        shader.SetUniformMat4f("u_MVP", projection);
 
         // Textures
         // --------
