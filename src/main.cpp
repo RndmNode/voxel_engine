@@ -109,18 +109,17 @@ int main(void)
 
         // Matricies
         // ---------
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 0.0f));                 // Model Matrix
+        
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f));                   // View Matrix
         glm::mat4 projection = glm::ortho(0.0f, float(w_width), 0.0f, float(w_height), -1.0f, 1.0f);        // Projection Matrix
 
-        glm::mat4 mvp = projection * view * model;
+        
 
         // Shaders
         // -------
         Shader shader("res/shaders/test.shader");
         shader.Bind();
         shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f); // Set Color
-        shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
 
         // Textures
         // --------
@@ -140,12 +139,13 @@ int main(void)
         Renderer renderer;
 
         // imgui state
-        bool show_demo_window = true;
-        bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        // bool show_demo_window = true;
+        // bool show_another_window = false;
+        // ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
         float r = 0.0f;
         float increment = 0.05f;
+        glm::vec3 translation(200.0f, 200.0f, 0.0f);
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -162,10 +162,14 @@ int main(void)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);                 // Model Matrix
+            glm::mat4 mvp = projection * view * model;
+
             // shader
             shader.Bind();
-            // shader.SetUniform4f("u_Color", r, 0.2f, 0.7f, 1.0f);
-            // shader.SetUniform1i("u_Texture", 0);
+            shader.SetUniform4f("u_Color", r, 0.2f, 0.7f, 1.0f);
+            shader.SetUniform1i("u_Texture", 0);
+            shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
 
             // draw
             renderer.Draw(va, ib, shader);
@@ -180,23 +184,8 @@ int main(void)
 
             // imgui window rendering
             {
-                static float f = 0.0f;
-                static int counter = 0;
-
                 ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-                ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-                ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-                ImGui::Checkbox("Another Window", &show_another_window);
-
-                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-                ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-                if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                    counter++;
-                ImGui::SameLine();
-                ImGui::Text("counter = %d", counter);
-
+                ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
                 ImGui::End();
             }
