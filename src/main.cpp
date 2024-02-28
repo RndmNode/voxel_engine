@@ -21,6 +21,8 @@
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
+#include "tests/TestClearColor.h"
+
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -139,6 +141,8 @@ int main(void)
         glm::vec3 translationA(200.0f, 200.0f, 0.0f);
         glm::vec3 translationB(400.0f, 200.0f, 0.0f);
 
+        test::TestClearColor test;
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -155,9 +159,14 @@ int main(void)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
+            test.OnUpdate(0.0f);
+            test.OnRender();
+            test.OnImGuiRender();
 
             // shader
             shader.Bind();
+
+            // Render first instance
             {
                 // model view matrix as a slider
                 glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);                 // Model Matrix
@@ -167,6 +176,7 @@ int main(void)
                 renderer.Draw(va, ib, shader);
             }
 
+            // Render second instance
             {
                 // model view matrix as a slider
                 glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);                 // Model Matrix
