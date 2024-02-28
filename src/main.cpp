@@ -62,7 +62,6 @@ int main(void)
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -78,10 +77,10 @@ int main(void)
         // Triangle
         // --------
         float positions[] = {
-            100.0f, 100.0f, 0.0f, 0.0f, // 0
-            200.0f, 100.0f, 1.0f, 0.0f, // 1
-            200.0f, 200.0f, 1.0f, 1.0f, // 2
-            100.0f, 200.0f, 0.0f, 1.0f, // 3
+            -50.0f, -50.0f, 0.0f, 0.0f, // 0
+             50.0f, -50.0f, 1.0f, 0.0f, // 1
+             50.0f,  50.0f, 1.0f, 1.0f, // 2
+            -50.0f,  50.0f, 0.0f, 1.0f, // 3
         };
         unsigned int indicies[] = {
             0, 1, 2,
@@ -109,11 +108,8 @@ int main(void)
 
         // Matricies
         // ---------
-        
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f));                   // View Matrix
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));                   // View Matrix
         glm::mat4 projection = glm::ortho(0.0f, float(w_width), 0.0f, float(w_height), -1.0f, 1.0f);        // Projection Matrix
-
-        
 
         // Shaders
         // -------
@@ -138,14 +134,11 @@ int main(void)
         // --------
         Renderer renderer;
 
-        // imgui state
-        // bool show_demo_window = true;
-        // bool show_another_window = false;
-        // ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
         float r = 0.0f;
         float increment = 0.05f;
-        glm::vec3 translation(200.0f, 200.0f, 0.0f);
+        glm::vec3 translationA(200.0f, 200.0f, 0.0f);
+        glm::vec3 translationB(400.0f, 200.0f, 0.0f);
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -162,17 +155,26 @@ int main(void)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);                 // Model Matrix
-            glm::mat4 mvp = projection * view * model;
 
             // shader
             shader.Bind();
-            shader.SetUniform4f("u_Color", r, 0.2f, 0.7f, 1.0f);
-            shader.SetUniform1i("u_Texture", 0);
-            shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
+            {
+                // model view matrix as a slider
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);                 // Model Matrix
+                glm::mat4 mvp = projection * view * model;
+                shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
+                // draw
+                renderer.Draw(va, ib, shader);
+            }
 
-            // draw
-            renderer.Draw(va, ib, shader);
+            {
+                // model view matrix as a slider
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);                 // Model Matrix
+                glm::mat4 mvp = projection * view * model;
+                shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
+                // draw
+                renderer.Draw(va, ib, shader);
+            }
 
             // change red value of color that is fed into the uniform 'u_Color'
             if (r > 1.0f)
@@ -185,7 +187,8 @@ int main(void)
             // imgui window rendering
             {
                 ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-                ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit MVP matrix
+                ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);            // Edit MVP matrix
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
                 ImGui::End();
             }
