@@ -110,8 +110,11 @@ int main(void)
 
         // Matricies
         // ---------
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));                   // View Matrix
-        glm::mat4 projection = glm::ortho(0.0f, float(w_width), 0.0f, float(w_height), -1.0f, 1.0f);        // Projection Matrix
+        // glm::mat4 projection = glm::ortho(0.0f, float(w_width), 0.0f, float(w_height), -1.0f, 1.0f);     // Projection Matrix
+        // glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));                   // View Matrix
+        // glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);                                  // Model Matrix
+        // glm::mat4 mvp = projection * view * model;
+        // shader.SetUniformMat4f("u_MVP", mvp); // this is how you set projection matrix ------
 
         // Shaders
         // -------
@@ -136,12 +139,14 @@ int main(void)
         // --------
         Renderer renderer;
 
-        float r = 0.0f;
-        float increment = 0.05f;
-        glm::vec3 translationA(200.0f, 200.0f, 0.0f);
-        glm::vec3 translationB(400.0f, 200.0f, 0.0f);
+        // instantiate tests
+        test::Test* currentTest = nullptr;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
+        // test::TestClearColor test;
 
-        test::TestClearColor test;
+        // Function to add tests
+        testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 
         // render loop
         // -----------
@@ -159,47 +164,20 @@ int main(void)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            test.OnUpdate(0.0f);
-            test.OnRender();
-            test.OnImGuiRender();
-
-            // shader
-            shader.Bind();
-
-            // Render first instance
+            // Test framework
+            if (currentTest)
             {
-                // model view matrix as a slider
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);                 // Model Matrix
-                glm::mat4 mvp = projection * view * model;
-                shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
-                // draw
-                renderer.Draw(va, ib, shader);
-            }
+                currentTest->OnUpdate(0.0f);
+                currentTest->OnRender();
+                ImGui::Begin("Test");
 
-            // Render second instance
-            {
-                // model view matrix as a slider
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);                 // Model Matrix
-                glm::mat4 mvp = projection * view * model;
-                shader.SetUniformMat4f("u_MVP", mvp); // Set projection matrix
-                // draw
-                renderer.Draw(va, ib, shader);
-            }
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
 
-            // change red value of color that is fed into the uniform 'u_Color'
-            if (r > 1.0f)
-                increment = -0.05f;
-            else if (r < 0.0f)
-                increment = 0.05f;
-
-            r += increment;
-
-            // imgui window rendering
-            {
-                ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-                ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);            // Edit MVP matrix
-                ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);            // Edit MVP matrix
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+                currentTest->OnImGuiRender();
                 ImGui::End();
             }
 
@@ -211,6 +189,10 @@ int main(void)
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
+        // Cleanup tests
+        delete currentTest;
+        if (currentTest != testMenu)
+            delete testMenu;
     }
     
     // Cleanup
