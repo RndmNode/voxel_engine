@@ -23,6 +23,7 @@
 
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
+#include "tests/TestBatchColorQuads.h"
 
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -44,8 +45,8 @@ int main(void)
     #endif
 
     /* Create a windowed mode window and its OpenGL context */
-    int w_width  = 960;
-    int w_height = 540;
+    int w_width  = 600;
+    int w_height = 600;
     window = glfwCreateWindow(w_width, w_height, "Test", NULL, NULL);
     if (!window)
     {
@@ -90,6 +91,7 @@ int main(void)
         // Function to add tests
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+        testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
 
         // render loop
         // -----------
