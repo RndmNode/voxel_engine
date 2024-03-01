@@ -22,6 +22,7 @@
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -76,65 +77,6 @@ int main(void)
 
     // Create scope to limit lifetime of stack allocated buffers
     {
-        // Triangle
-        // --------
-        float positions[] = {
-            -50.0f, -50.0f, 0.0f, 0.0f, // 0
-             50.0f, -50.0f, 1.0f, 0.0f, // 1
-             50.0f,  50.0f, 1.0f, 1.0f, // 2
-            -50.0f,  50.0f, 0.0f, 1.0f, // 3
-        };
-        unsigned int indicies[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
-
-        // Enable blending
-        GLCall(glEnable(GL_BLEND));
-        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-        // Buffers
-        // -------
-        // Vertex Buffer
-        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-
-        // Index Buffer
-        IndexBuffer ib(indicies, 6);
-
-        // Vertex Array
-        VertexArray va;
-        VertexBufferLayout layout;
-        layout.Push<float>(2);
-        layout.Push<float>(2);
-        va.AddBuffer(vb, layout);
-
-        // Matricies
-        // ---------
-        // glm::mat4 projection = glm::ortho(0.0f, float(w_width), 0.0f, float(w_height), -1.0f, 1.0f);     // Projection Matrix
-        // glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));                   // View Matrix
-        // glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);                                  // Model Matrix
-        // glm::mat4 mvp = projection * view * model;
-        // shader.SetUniformMat4f("u_MVP", mvp); // this is how you set projection matrix ------
-
-        // Shaders
-        // -------
-        Shader shader("res/shaders/test.shader");
-        shader.Bind();
-        shader.SetUniform4f("u_Color", 0.5f, 0.2f, 0.7f, 1.0f); // Set Color
-
-        // Textures
-        // --------
-        std::string path = "res/textures/space.png";
-        Texture texture(path);
-        texture.Bind();
-        shader.SetUniform1i("u_Texture", 0); // Set Texture
-        
-        // reset buffers
-        va.Unbind();
-        vb.Unbind();
-        ib.Unbind();
-        shader.Unbind();
-
         // Renderer
         // --------
         Renderer renderer;
@@ -147,6 +89,7 @@ int main(void)
 
         // Function to add tests
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+        testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 
         // render loop
         // -----------
