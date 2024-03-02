@@ -24,6 +24,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestBatchColorQuads.h"
+#include "tests/TestBatchTextures.h"
 
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -92,6 +93,7 @@ int main(void)
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
         testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
+        testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
 
         // render loop
         // -----------
