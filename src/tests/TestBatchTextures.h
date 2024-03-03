@@ -31,5 +31,7 @@ namespace test
 
         std::vector<std::unique_ptr<Texture>> textures;
         glm::mat4 m_Projection, m_View; // projection and view matricies
+
+        float m_Quad_1_Position[2] = { -0.75f, -0.25f };
     };
 } // namespace test
