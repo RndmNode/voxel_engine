@@ -3,7 +3,6 @@
 #include "TestBatchTextures.h"
 #include "../renderer.h"
 #include "../vendor/imgui/imgui.h"
-#include "../vendor/glm/glm.hpp"
 
 struct Vertex 
 {
@@ -93,7 +92,7 @@ namespace test {
         std::string wood = "res/textures/Wood_Box.png";
         std::string leather = "res/textures/Leather.png";
         textures.push_back(std::make_unique<Texture>(wood));
-        textures.push_back(std::make_unique<Texture>(leather));
+        textures.push_back(std::make_unique<Texture>(leather)); 
         textures[0]->Bind(0);
         textures[1]->Bind(1);
 
@@ -120,16 +119,16 @@ namespace test {
         auto q1 = CreateQuad(0.25f, -0.25f, 1.0f);
 
         // Make buffer for quads
-        Vertex verticies[8];
-        memcpy(verticies, q0.data(), sizeof(Vertex) * q0.size());
-        memcpy(verticies + q0.size(), q1.data(), sizeof(Vertex) * q1.size());
+        Vertex vertices[8];
+        memcpy(vertices, q0.data(), sizeof(Vertex) * q0.size());
+        memcpy(vertices + q0.size(), q1.data(), sizeof(Vertex) * q1.size());
 
         // instantiate renderer
         Renderer renderer;
 
         // Set Dynamic Vertex Buffer
         m_VertexBuffer->Bind();
-        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verticies), verticies));
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
         
         // Draw
         renderer.Draw(*m_VAO, *m_IBO, *m_Shader);
