@@ -47,7 +47,7 @@ int main(void)
     #endif
 
     /* Create a windowed mode window and its OpenGL context */
-    int w_width  = 1200;
+    int w_width  = 900;
     int w_height = 900;
     window = glfwCreateWindow(w_width, w_height, "Test", NULL, NULL);
     if (!window)

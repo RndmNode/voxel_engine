@@ -30,6 +30,11 @@ public:
     float getY() { return m_Y; }
     float getZ() { return m_Z; }
     float getSize() { return m_Size; }
+    void setX(float x) { m_X = x; }
+    void setY(float y) { m_Y = y; }
+    void setZ(float z) { m_Z = z; }
+    void setSize(float size) { m_Size = size; }
+
     void setVertexPositions();
 
     std::array<glm::vec3, 8> m_Vertices;

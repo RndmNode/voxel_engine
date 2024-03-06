@@ -7,7 +7,6 @@
 #include "../vertex_buffer.h"
 #include "../shader.h"
 
-// #include "../vendor/glm/glm.hpp"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 
 #include <memory>
@@ -22,6 +21,8 @@ namespace test
         void OnUpdate(float deltaTime) override;
         void OnRender() override;
         void OnImGuiRender() override;
+
+        float m_VoxelPos[3];
     private:
         std::unique_ptr<VertexArray> m_VertexArray;
         std::unique_ptr<VertexBuffer> m_VertexBuffer;
@@ -29,7 +30,8 @@ namespace test
         std::unique_ptr<Shader> m_Shader;
 
         Voxel m_Voxel;
-        float m_ScreenWidth, m_ScreenHeight;
+        
+        // float m_ScreenWidth, m_ScreenHeight;
         glm::mat4 m_Projection, m_View; // projection and view matricies
     };
 } // namespace test
