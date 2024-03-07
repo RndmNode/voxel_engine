@@ -22,5 +22,5 @@ in vec3 color_coords;
 
 void main()
 {
-   color = vec4(color_coords.xy, 0.1, 1.0);
+   color = vec4(color_coords.xyz, 1.0);
 }

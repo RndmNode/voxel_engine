@@ -18,9 +18,9 @@ unsigned int const voxel_indices[36] = {
 
 namespace test {
     TestVoxel::TestVoxel()
-        : m_Voxel(-0.5f, -0.5f, 0.0f, 1.0f),
+        : m_Voxel(-0.5f, -0.5f, 1.0f, 1.0f),
           m_Projection(glm::perspective(glm::radians(45.0f), (float)900/(float)900, 0.1f, 100.0f)),       // projection matrix
-          m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)))      // view matrix
+          m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)))      // view matrix
     {
 
         // Build layout for vertex buffer
@@ -32,17 +32,15 @@ namespace test {
         m_VertexArray = std::make_unique<VertexArray>();
         m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
-        // for (auto& i : voxel_indices)
-        // {
-        //     std::cout << i << std::endl;
-        // }
-
         // Set Index buffer
         m_IndexBuffer = std::make_unique<IndexBuffer>(voxel_indices, 36);
 
         // Set Shader
         m_Shader = std::make_unique<Shader>("res/shaders/simple.shader");
         m_Shader->Bind();
+
+        // Enable Depth Buffer
+        GLCall(glEnable(GL_DEPTH_TEST));
     }
     
     TestVoxel::~TestVoxel()
@@ -56,35 +54,14 @@ namespace test {
     void TestVoxel::OnRender()
     {
         GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+        // Get vertices from voxel
         glm::vec3 vertices[8];
-
-        if (!once)
-        {
-            std::cout << "m_Vertices: " << std::endl;
-            for (auto& i : m_Voxel.m_Vertices)
-            {
-                std::cout << i.x << " " << i.y << " " << i.z << std::endl;
-            }
-            std::cout << "\n";
-        }
-
         memcpy(vertices, m_Voxel.m_Vertices.data(), sizeof(vertices[0]) * 8);
 
-
-        if (!once)
-        {
-            std::cout << "Vertices: " << std::endl;
-            for(auto& i : vertices)
-            {
-                std::cout << i.x << " " << i.y << " " << i.z << std::endl;
-            }
-            once = true;
-        }
-
         // glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
         // instantiate renderer
         Renderer renderer;
@@ -93,24 +70,16 @@ namespace test {
         m_VertexBuffer->Bind();
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
 
+        // Send MVP matrix to Shader
         glm::mat4 mvp = m_Projection * m_View * model;
         m_Shader->Bind();
         m_Shader->SetUniformMat4f("u_MVP", model);
 
         renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
-        // m_Shader->Bind();
-        // m_VertexArray->Bind();
-        // m_IndexBuffer->Bind();
-
-        // GLCall(glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr));
     }
     
     void TestVoxel::OnImGuiRender()
     {
-        
-
-        ImGui::DragFloat3("Voxel Position", m_VoxelPos);
-
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
     }
