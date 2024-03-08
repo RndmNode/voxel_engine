@@ -27,18 +27,31 @@
 #include "tests/TestBatchTextures.h"
 #include "tests/TestVoxel.h"
 
+/*
+    This is a rudimentary voxel engine.
+    It utilizes GLFW for OpenGL window rendering and input processing.
+    It employs GLEW to be able to call all of the OpenGL functions.
+    GLM is used for math.
+    ImGui is used for being able to test and set variables while the executable is running.
+
+    This was developed with the intention of experimenting with 3D graphics and OpenGL
+        as well as learning strategies for optimizing performance.
+*/
+
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 int main(void)
 {
+    // Instantiate GLFW Window
     GLFWwindow* window;
 
     /* Initialize the library */
     if (!glfwInit())
         return -1;
 
+    // initialize settings for GLFW
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -46,7 +59,7 @@ int main(void)
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
 
-    /* Create a windowed mode window and its OpenGL context */
+    // Create a windowed mode window and its OpenGL context
     int w_width  = 900;
     int w_height = 900;
     window = glfwCreateWindow(w_width, w_height, "Test", NULL, NULL);
@@ -56,7 +69,7 @@ int main(void)
         return -1;
     }
 
-    /* Make the window's context current */
+    // Make the window's context current
     glfwMakeContextCurrent(window);
 
     // Setup Dear ImGui context
@@ -89,7 +102,7 @@ int main(void)
         test::TestMenu* testMenu = new test::TestMenu(currentTest);
         currentTest = testMenu;
 
-        // Function to add tests
+        // Add tests to executable
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
         testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
@@ -115,16 +128,20 @@ int main(void)
             // Test framework
             if (currentTest)
             {
+                // Check if a test has been selected to run and render if so
                 currentTest->OnUpdate(0.0f);
                 currentTest->OnRender();
                 ImGui::Begin("Test");
 
+                // If in a test and we pressed the 'back' button
                 if (currentTest != testMenu && ImGui::Button("<-"))
                 {
+                    // exit the test
                     delete currentTest;
                     currentTest = testMenu;
                 }
 
+                // Render
                 currentTest->OnImGuiRender();
                 ImGui::End();
             }
@@ -165,6 +182,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
+    // Close application if 'Esc' is pressed
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }

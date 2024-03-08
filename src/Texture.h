@@ -2,6 +2,13 @@
 
 #include "renderer.h"
 
+/* Texture class
+ * 
+ * This class represents a texture that can be bound to a shader program
+ * and used to render objects with.
+ *
+*/
+
 class Texture
 {
 private:

@@ -1,5 +1,11 @@
 #pragma once
 
+// IndexBuffer class
+//  - Represents an index buffer
+//  - Stores the index data for the vertex buffer
+//  - Binds and unbinds the index buffer
+//  - Deletes the index buffer
+
 class IndexBuffer
 {
     private:

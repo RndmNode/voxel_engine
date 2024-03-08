@@ -5,6 +5,13 @@
 
 #include "renderer.h"
 
+/*
+    VertexBufferLayoutElement struct
+    This struct is used to define the layout of the vertex buffer.
+    It contains the type of the element, the count of the element, and whether or not it is normalized.
+    It also contains a static function to get the size of the type of the element.
+*/
+
 struct VertexBufferLayoutElement
 {
     unsigned int type;
@@ -24,6 +31,15 @@ struct VertexBufferLayoutElement
     };
 };
 
+/*
+    VertexBufferLayout class
+    This class is used to define the layout of the vertex buffer.
+    It contains a vector of VertexBufferLayoutElements and the stride of the layout.
+    It also contains a template function to push elements to the layout.
+    The layout of the vertex buffer is defined by pushing elements to the layout using the Push function.
+    The layout elements are used in the vertex buffer to define the position, color, and texture coordinates of the vertices
+        or anything else stored in the vertex buffer.
+*/
 
 class VertexBufferLayout
 {

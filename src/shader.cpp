@@ -11,7 +11,7 @@
 Shader::Shader(const std::string& filepath)
     : m_filepath (filepath), m_RendererID(0)
 {
-    // grab shaders from file, create shaders, and use them
+    // grab shaders from file, create shaders
     ShaderProgramSource source = ParseShader(filepath);
     m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
@@ -62,11 +62,13 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 // Compile OpenGL Shader
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
+    // Create and compile shader
     GLCall(unsigned int id = glCreateShader(type));
     const char* src = source.c_str();
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
 
+    // Check for errors
     int result;
     GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
     if (result == GL_FALSE)
@@ -89,15 +91,18 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 // Create OpenGL Shader
 unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
+    // Create and compile vertex and fragment shaders
     unsigned int program = glCreateProgram();
     GLCall(unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader));
     GLCall(unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader));
 
+    // Attach and link shaders
     GLCall(glAttachShader(program, vs));
     GLCall(glAttachShader(program, fs));
     GLCall(glLinkProgram(program));
     GLCall(glValidateProgram(program));
 
+    // Check for errors
     int success;
     char infoLog[512];
     glGetProgramiv(program, GL_LINK_STATUS, &success);
@@ -107,6 +112,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
         std::cout << infoLog << std::endl;
     }
 
+    // Delete shaders to free memory
     GLCall(glDeleteShader(vs));
     GLCall(glDeleteShader(fs));
 
@@ -123,6 +129,16 @@ void Shader::Unbind() const
     GLCall(glUseProgram(0));
 }
 
+/* 
+ * Uniforms
+ * 
+ * Uniforms are sent to the shader program using the glUniform* functions
+ * These functions are used to set the value of a uniform variable in the shader program
+ * Examples of uniform variables include the model, view, and projection matrices,
+ * as well as the color or texture of an object
+*/
+
+// Set Uniforms
 void Shader::SetUniform1i(const std::string& name, int value)
 {
     GLCall(glUniform1i(GetUniformLocation(name), value));
@@ -143,6 +159,7 @@ void Shader::SetUniform1iv(const std::string& name, unsigned int count, int *val
     GLCall(glUniform1iv(GetUniformLocation(name), count, values));
 }
 
+// We need to get the location of the uniform variable in the shader program in order to set its value
 int Shader::GetUniformLocation(const std::string& name) const
 {
     if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())

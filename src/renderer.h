@@ -6,6 +6,11 @@
 #include "index_buffer.h"
 #include "shader.h"
 
+/* 
+    Renderer class
+    This class is used to clear the screen and draw the objects to the screen.
+*/
+
 #define ASSERT(x) if (!(x)) __builtin_debugtrap(); // kill program
 #define GLCall(x) GLClearError();\
     x;\
