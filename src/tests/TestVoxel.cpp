@@ -8,17 +8,29 @@
 #include "GLFW/glfw3.h"
 bool once = false;
 unsigned int const voxel_indices[36] = {
-    0, 1, 2, 2, 3, 0, // front
-    4, 5, 6, 6, 7, 4, // back
-    0, 4, 7, 7, 3, 0, // left
-    1, 5, 6, 6, 2, 1, // right
-    0, 1, 5, 5, 4, 0, // top
-    3, 2, 6, 6, 7, 3  // bottom
+    // 0, 1, 2, 2, 3, 0, // front
+    // 4, 5, 6, 6, 7, 4, // back
+    // 0, 4, 7, 7, 3, 0, // left
+    // 1, 5, 6, 6, 2, 1, // right
+    // 0, 1, 5, 5, 4, 0, // top
+    // 3, 2, 6, 6, 7, 3  // bottom
+    0, 1, 2,
+    1, 3, 4,
+    5, 6, 3,
+    7, 3, 6,
+    2, 4, 7,
+    0, 7, 6,
+    0, 5, 1,
+    1, 5, 3,
+    5, 0, 6,
+    7, 4, 3,
+    2, 1, 4,
+    0, 2, 7
 };
 
 namespace test {
     TestVoxel::TestVoxel()
-        : m_Voxel(-0.5f, -0.5f, 1.0f, 1.0f),
+        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f),
           m_Projection(glm::perspective(glm::radians(45.0f), (float)900/(float)900, 0.1f, 100.0f)),       // projection matrix
           m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)))      // view matrix
     {
@@ -41,6 +53,11 @@ namespace test {
 
         // Enable Depth Buffer
         GLCall(glEnable(GL_DEPTH_TEST));
+
+        // Enable Face Culling
+        GLCall(glEnable(GL_CULL_FACE));
+        GLCall(glCullFace(GL_BACK));
+        GLCall(glFrontFace(GL_CW));
     }
     
     TestVoxel::~TestVoxel()
