@@ -30,10 +30,24 @@ unsigned int const voxel_indices[36] = {
 
 namespace test {
     TestVoxel::TestVoxel()
-        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f),
-          m_Projection(glm::perspective(glm::radians(45.0f), (float)900/(float)900, 0.1f, 100.0f)),       // projection matrix
-          m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)))      // view matrix
+        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
+        //   m_Projection(glm::perspective(glm::radians(45.0f), (float)900/(float)900, 0.1f, 100.0f)),       // projection matrix
+        //   m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)))      // view matrix
     {
+
+        m_Projection = glm::mat4(
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        );
+
+        m_View = glm::mat4(
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        );
 
         // Build layout for vertex buffer
         VertexBufferLayout layout;
@@ -78,7 +92,15 @@ namespace test {
         memcpy(vertices, m_Voxel.m_Vertices.data(), sizeof(vertices[0]) * 8);
 
         // glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        // glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 model = glm::mat4(1.0);
+
+        if (m_rotate)
+        {
+            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.2f));
+        } else {
+            model = glm::mat4(1.0);
+        }
 
         // instantiate renderer
         Renderer renderer;
@@ -90,14 +112,17 @@ namespace test {
         // Send MVP matrix to Shader
         glm::mat4 mvp = m_Projection * m_View * model;
         m_Shader->Bind();
-        m_Shader->SetUniformMat4f("u_MVP", model);
+        m_Shader->SetUniformMat4f("u_MVP", mvp);
 
         renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
     }
     
     void TestVoxel::OnImGuiRender()
     {
+        if (ImGui::Button("Rotate"))
+            m_rotate = !m_rotate;
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
+
     }
 }
