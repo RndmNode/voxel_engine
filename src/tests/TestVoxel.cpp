@@ -28,18 +28,26 @@ unsigned int const voxel_indices[36] = {
     0, 2, 7
 };
 
+// convert degrees to radians and vice versa
+#define degreesToRadians(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+#define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / M_PI)
+
+float FOV = 90.0f;                                          // Field of View
+float TanHalfFOV = glm::tan(degreesToRadians(FOV / 2.0f));      // tangent of half the field of view
+float d = 1 / TanHalfFOV;                                   // reciprocal of tangent
+
 namespace test {
     TestVoxel::TestVoxel()
-        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
-        //   m_Projection(glm::perspective(glm::radians(45.0f), (float)900/(float)900, 0.1f, 100.0f)),       // projection matrix
+        : m_Voxel(0.0f, 0.0f, 3.0f, 1.0f)
+        //   m_Projection(glm::perspective(glm::radians(90.0f), (float)900/(float)900, 0.1f, 100.0f))       // projection matrix
         //   m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)))      // view matrix
     {
 
         m_Projection = glm::mat4(
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
+            d,    0.0f, 0.0f, 0.0f,
+            0.0f, d,    0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
+            0.0f, 0.0f, 1.0f, 0.0f
         );
 
         m_View = glm::mat4(
@@ -110,9 +118,11 @@ namespace test {
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
 
         // Send MVP matrix to Shader
-        glm::mat4 mvp = m_Projection * m_View * model;
+        // glm::mat4 mvp = m_Projection * m_View * model;
         m_Shader->Bind();
-        m_Shader->SetUniformMat4f("u_MVP", mvp);
+        m_Shader->SetUniformMat4f("u_Model", model);
+        m_Shader->SetUniformMat4f("u_View", m_View);
+        m_Shader->SetUniformMat4f("u_Projection", m_Projection);
 
         renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
     }

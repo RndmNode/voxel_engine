@@ -4,12 +4,16 @@
 layout (location = 0) in vec4 a_Position;
 
 // model view projection matrix
-uniform mat4 u_MVP;
+// uniform mat4 u_MVP;
+uniform mat4 u_Model;
+uniform mat4 u_View;
+uniform mat4 u_Projection;
+
 out vec3 color_coords;
 
 void main()
 {
-   gl_Position = a_Position * u_MVP;
+   gl_Position = a_Position * u_Projection * u_View * u_Model;
    color_coords = a_Position.xyz;
 }
 
