@@ -30,7 +30,9 @@ namespace test
         std::unique_ptr<Shader> m_Shader;
 
         Voxel m_Voxel;
-        bool m_rotate = false;
+        bool m_rotate_toggle = false;
+        bool m_proj_toggle = false;
+        bool m_view_toggle = false;
         
         // float m_ScreenWidth, m_ScreenHeight;
         glm::mat4 m_Projection, m_View; // projection and view matricies

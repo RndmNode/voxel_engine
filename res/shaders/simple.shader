@@ -13,7 +13,7 @@ out vec3 color_coords;
 
 void main()
 {
-   gl_Position = a_Position * u_Projection * u_View * u_Model;
+   gl_Position = u_Projection * u_View * u_Model * a_Position;
    color_coords = a_Position.xyz;
 }
 

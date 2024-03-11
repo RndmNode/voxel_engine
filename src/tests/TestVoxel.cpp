@@ -36,26 +36,26 @@ float FOV = 90.0f;                                          // Field of View
 float TanHalfFOV = glm::tan(degreesToRadians(FOV / 2.0f));      // tangent of half the field of view
 float d = 1 / TanHalfFOV;                                   // reciprocal of tangent
 
+// glm::mat4 proj = glm::mat4(
+//             1.0f, 0.0f, 0.0f, 0.0f,
+//             0.0f, 1.0f, 0.0f, 0.0f,
+//             0.0f, 0.0f, 1.0f, 0.0f,
+//             0.0f, 0.0f, 0.0f, 1.0f
+//         );
+
 namespace test {
     TestVoxel::TestVoxel()
-        : m_Voxel(0.0f, 0.0f, 3.0f, 1.0f)
+        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
         //   m_Projection(glm::perspective(glm::radians(90.0f), (float)900/(float)900, 0.1f, 100.0f))       // projection matrix
         //   m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)))      // view matrix
     {
 
-        m_Projection = glm::mat4(
-            d,    0.0f, 0.0f, 0.0f,
-            0.0f, d,    0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f
-        );
-
-        m_View = glm::mat4(
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        );
+        // m_View = glm::mat4(
+        //     1.0f, 0.0f, 0.0f, 0.0f,
+        //     0.0f, 1.0f, 0.0f, 0.0f,
+        //     0.0f, 0.0f, 1.0f, 0.0f,
+        //     0.0f, 0.0f, 0.0f, 1.0f
+        // );
 
         // Build layout for vertex buffer
         VertexBufferLayout layout;
@@ -78,7 +78,7 @@ namespace test {
 
         // Enable Face Culling
         GLCall(glEnable(GL_CULL_FACE));
-        GLCall(glCullFace(GL_BACK));
+        GLCall(glCullFace(GL_FRONT));
         GLCall(glFrontFace(GL_CW));
     }
     
@@ -103,11 +103,25 @@ namespace test {
         // glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 model = glm::mat4(1.0);
 
-        if (m_rotate)
+        if (m_rotate_toggle)
         {
             model = glm::rotate(model, (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.2f));
         } else {
             model = glm::mat4(1.0);
+        }
+
+        if (m_proj_toggle)
+        {
+            m_Projection = glm::perspective(glm::radians(FOV), (float)900/(float)900, 0.1f, 100.0f);
+        } else {
+            m_Projection = glm::mat4(1.0);
+        }
+
+        if (m_view_toggle)
+        {
+            m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+        } else {
+            m_View = glm::mat4(1.0);
         }
 
         // instantiate renderer
@@ -129,8 +143,14 @@ namespace test {
     
     void TestVoxel::OnImGuiRender()
     {
-        if (ImGui::Button("Rotate"))
-            m_rotate = !m_rotate;
+        ImGui::Checkbox("Rotate", &m_rotate_toggle);
+        ImGui::Checkbox("Projection with GLM", &m_proj_toggle);
+        if (m_proj_toggle)
+        {
+            ImGui::SliderFloat("Field of View", &FOV, 0.0f, 180.0f);
+
+        }
+        ImGui::Checkbox("View with GLM", &m_view_toggle);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
 
