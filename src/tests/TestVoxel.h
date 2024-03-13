@@ -33,6 +33,13 @@ namespace test
         bool m_rotate_toggle = false;
         bool m_proj_toggle = false;
         bool m_view_toggle = false;
+        bool m_wire_toggle = false;
+
+        float m_Scale = 1.0f;
+
+        float m_Translation[3] = { 0.0f, 0.0f, 0.0f };
+        float m_FOV = 90.0f; // Field of View
+        float m_Cam_Pos[3] = { 0.0f, 0.0f, 3.0f };
         
         // float m_ScreenWidth, m_ScreenHeight;
         glm::mat4 m_Projection, m_View; // projection and view matricies

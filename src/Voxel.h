@@ -38,7 +38,7 @@ public:
     void setVertexPositions();
 
     std::array<glm::vec3, 8> m_Vertices;
-    float m_Indices[36];
+    // float m_Indices[36];
 private:
     float m_X, m_Y, m_Z;
     float m_Size;
