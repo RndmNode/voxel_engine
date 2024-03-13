@@ -35,10 +35,11 @@ namespace test {
 
         // Build layout for vertex buffer
         VertexBufferLayout layout;
-        layout.Push<float>(3);
+        layout.Push<float>(3);          // vertices
+        layout.Push<float>(2);          // texture coordinates
 
         // Set vertex buffer
-        m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, sizeof(glm::vec3) * 8);
+        m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, sizeof(float) * 8 * 5);
         m_VertexArray = std::make_unique<VertexArray>();
         m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
@@ -48,6 +49,11 @@ namespace test {
         // Set Shader
         m_Shader = std::make_unique<Shader>("res/shaders/simple.shader");
         m_Shader->Bind();
+
+        // Set Texture
+        std::string path = "res/textures/Wood_Box.png";
+        m_Texture = std::make_unique<Texture>(path);
+        m_Shader->SetUniform1i("u_Texture", 0);
 
         // Enable Depth Buffer
         GLCall(glEnable(GL_DEPTH_TEST));
@@ -72,8 +78,8 @@ namespace test {
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         // Get vertices from voxel
-        glm::vec3 vertices[8];
-        memcpy(vertices, m_Voxel.m_Vertices.data(), sizeof(vertices[0]) * 8);
+        // float vertices[40];
+        // memcpy(vertices, m_Voxel.m_Vertices, sizeof(float) * 40);
 
         glm::mat4 model = glm::mat4(1.0);                                                                   // Model identity matrix
         model = glm::translate(model, glm::vec3(m_Translation[0], m_Translation[1], m_Translation[2]));     // Model translation
@@ -105,10 +111,11 @@ namespace test {
 
         // instantiate renderer
         Renderer renderer;
+        m_Texture->Bind(0);
 
         // Set Dynamic Vertex Buffer
         m_VertexBuffer->Bind();
-        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 5 * 8, m_Voxel.m_Vertices));
 
         // Send MVP matrices to Shader
         m_Shader->Bind();

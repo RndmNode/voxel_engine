@@ -6,6 +6,7 @@
 #include "../index_buffer.h"
 #include "../vertex_buffer.h"
 #include "../shader.h"
+#include "../Texture.h"
 
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 
@@ -28,6 +29,7 @@ namespace test
         std::unique_ptr<VertexBuffer> m_VertexBuffer;
         std::unique_ptr<IndexBuffer> m_IndexBuffer;
         std::unique_ptr<Shader> m_Shader;
+        std::unique_ptr<Texture> m_Texture;
 
         Voxel m_Voxel;
         bool m_rotate_toggle = false;
