@@ -50,7 +50,7 @@ namespace test {
     {
     }
     
-    void TestBatchColorQuads::OnUpdate(float deltaTime)
+    void TestBatchColorQuads::OnUpdate(GLFWwindow *window, float deltaTime)
     {
     }
     

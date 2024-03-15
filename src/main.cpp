@@ -1,11 +1,8 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <iomanip>
+// #include <iostream>
+// #include <fstream>
+// #include <string>
+// #include <sstream>
+// #include <iomanip>
 
 #include "renderer.h"
 #include "vertex_buffer.h"
@@ -27,6 +24,9 @@
 #include "tests/TestBatchTextures.h"
 #include "tests/TestVoxel.h"
 
+// #include <GL/glew.h>
+// #include <GLFW/glfw3.h>
+
 /*
     This is a rudimentary voxel engine.
     It utilizes GLFW for OpenGL window rendering and input processing.
@@ -41,6 +41,9 @@
 // Resize window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
 
 int main(void)
 {
@@ -113,9 +116,15 @@ int main(void)
         // -----------
         while (!glfwWindowShouldClose(window))
         {
+            // time
+            float currentFrame = glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;  
+
             // input
             // -----
             processInput(window);
+            // currentTest->ProcessInput(window);
 
             /* Render here */
             renderer.Clear();
@@ -129,7 +138,7 @@ int main(void)
             if (currentTest)
             {
                 // Check if a test has been selected to run and render if so
-                currentTest->OnUpdate(0.0f);
+                currentTest->OnUpdate(window, deltaTime);
                 currentTest->OnRender();
                 ImGui::Begin("Test");
 
@@ -185,4 +194,5 @@ void processInput(GLFWwindow *window)
     // Close application if 'Esc' is pressed
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
 }

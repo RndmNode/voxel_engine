@@ -19,9 +19,10 @@ namespace test
         TestVoxel();
         ~TestVoxel();
 
-        void OnUpdate(float deltaTime) override;
+        void OnUpdate(GLFWwindow *window, float deltaTime) override;
         void OnRender() override;
         void OnImGuiRender() override;
+        void ProcessInput(GLFWwindow *window) override;
 
         float m_VoxelPos[3];
     private:
@@ -33,15 +34,15 @@ namespace test
 
         Voxel m_Voxel;
         bool m_rotate_toggle = false;
-        bool m_proj_toggle = false;
-        bool m_view_toggle = false;
         bool m_wire_toggle = false;
 
         float m_Scale = 1.0f;
-
         float m_Translation[3] = { 0.0f, 0.0f, 0.0f };
         float m_FOV = 90.0f; // Field of View
-        float m_Cam_Pos[3] = { 0.0f, 0.0f, 3.0f };
+        glm::vec3 m_Cam_Pos = { 0.0f, 0.0f, 3.0f };
+
+        const glm::vec3 m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+        const glm::vec3 m_CameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
         
         // float m_ScreenWidth, m_ScreenHeight;
         glm::mat4 m_Projection, m_View; // projection and view matricies

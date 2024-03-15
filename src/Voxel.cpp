@@ -28,9 +28,9 @@ void Voxel::setVertexPositions()
         m_X - (m_Size / 2), m_Y + (m_Size / 2), m_Z + (m_Size / 2),     1.0f, 0.0f,
         m_X + (m_Size / 2), m_Y - (m_Size / 2), m_Z - (m_Size / 2),     1.0f, 1.0f,
         m_X - (m_Size / 2), m_Y - (m_Size / 2), m_Z - (m_Size / 2),     0.0f, 0.0f,
-        m_X + (m_Size / 2), m_Y + (m_Size / 2), m_Z - (m_Size / 2),     0.0f, 1.0f,
-        m_X + (m_Size / 2), m_Y - (m_Size / 2), m_Z + (m_Size / 2),     1.0f, 0.0f,
-        m_X - (m_Size / 2), m_Y - (m_Size / 2), m_Z + (m_Size / 2),     1.0f, 1.0f
+        m_X + (m_Size / 2), m_Y + (m_Size / 2), m_Z - (m_Size / 2),     1.0f, 0.0f,
+        m_X + (m_Size / 2), m_Y - (m_Size / 2), m_Z + (m_Size / 2),     0.0f, 1.0f,
+        m_X - (m_Size / 2), m_Y - (m_Size / 2), m_Z + (m_Size / 2),     1.0f, 1.0f 
     };
 
     memcpy(m_Vertices, vertices, sizeof(float) * 40);

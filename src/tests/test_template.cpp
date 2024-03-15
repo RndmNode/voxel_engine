@@ -1,8 +1,5 @@
-// #include <GL/glew.h>
 
 #include "test_template.h"
-#include "../renderer.h"
-#include "../vendor/imgui/imgui.h"
 
 namespace test {
     test_template::test_template()
@@ -13,7 +10,7 @@ namespace test {
     {
     }
     
-    void test_template::OnUpdate(float deltaTime)
+    void test_template::OnUpdate(GLFWwindow *window, float deltaTime)
     {
     }
     
@@ -24,6 +21,11 @@ namespace test {
     }
     
     void test_template::OnImGuiRender()
+    {
+        
+    }
+    
+    void test_template::ProcessInput(GLFWwindow *window)
     {
         
     }

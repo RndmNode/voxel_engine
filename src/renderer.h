@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "vertex_array.h"
 #include "index_buffer.h"
@@ -8,7 +9,9 @@
 
 /* 
     Renderer class
-    This class is used to clear the screen and draw the objects to the screen.
+    This class is used to render the vertex array and index buffer using the shader.
+    It contains a function to clear the screen and a function to draw the vertex array and index buffer using the shader.
+    It also contains a macro to check for errors on openGL calls.
 */
 
 #define ASSERT(x) if (!(x)) __builtin_debugtrap(); // kill program

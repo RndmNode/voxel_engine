@@ -2,7 +2,6 @@
 
 #include "TestBatchTextures.h"
 #include "../renderer.h"
-#include "../vendor/imgui/imgui.h"
 
 struct Vertex 
 {
@@ -105,7 +104,7 @@ namespace test {
     {
     }
     
-    void TestBatchTextures::OnUpdate(float deltaTime)
+    void TestBatchTextures::OnUpdate(GLFWwindow *window, float deltaTime)
     {
     }
     
