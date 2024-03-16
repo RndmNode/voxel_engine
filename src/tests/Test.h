@@ -19,9 +19,10 @@ namespace test {
         virtual void OnRender() {}
         virtual void OnImGuiRender() {}
         virtual void ProcessInput(GLFWwindow *window) {}
+        virtual void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {}
 
     private:
-
+        std::unique_ptr<Shader> m_Shader;
     };
 
     class TestMenu : public Test 

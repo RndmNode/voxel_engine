@@ -3,6 +3,7 @@
 
 #include "../vertex_buffer_layout.h"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
+#include "../Camera.h"
 
 unsigned int const voxel_indices[36] = {
     // 0, 1, 2, 2, 3, 0, // front
@@ -68,18 +69,6 @@ namespace test {
     
     void TestChunk::OnUpdate(GLFWwindow *window, float deltaTime)
     {
-        // Movement speed
-        float cameraSpeed = 2.5f * deltaTime;
-
-        // WASD Camera Movement
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            m_Cam_Pos += cameraSpeed * m_CameraFront;
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            m_Cam_Pos -= cameraSpeed * m_CameraFront;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            m_Cam_Pos -= glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * cameraSpeed;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            m_Cam_Pos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * cameraSpeed;
     }
     
     void TestChunk::OnRender()
@@ -107,10 +96,10 @@ namespace test {
         GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 5 * 8, m_Voxel.m_Vertices));
 
         // Send MVP matrices to Shader
-        m_Shader->Bind();
-        m_Shader->SetUniformMat4f("u_Model", model);
-        m_Shader->SetUniformMat4f("u_View", m_View);
-        m_Shader->SetUniformMat4f("u_Projection", m_Projection);
+        // m_Shader->Bind();
+        // m_Shader->SetUniformMat4f("u_Model", model);
+        // m_Shader->SetUniformMat4f("u_View", m_View);
+        // m_Shader->SetUniformMat4f("u_Projection", m_Projection);
 
         // Draw
         renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
@@ -130,8 +119,11 @@ namespace test {
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
     }
     
-    void TestChunk::ProcessInput(GLFWwindow *window)
+    void TestChunk::SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection)
     {
-        
+        m_Shader->Bind();
+        m_Shader->SetUniformMat4f("u_Model", model);
+        m_Shader->SetUniformMat4f("u_View", view);
+        m_Shader->SetUniformMat4f("u_Projection", projection);
     }
 }

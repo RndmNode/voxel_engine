@@ -24,7 +24,8 @@ namespace test
         void OnUpdate(GLFWwindow *window, float deltaTime) override;
         void OnRender() override;
         void OnImGuiRender() override;
-        void ProcessInput(GLFWwindow *window) override;
+        void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
+        // void ProcessInput(GLFWwindow *window) override;
     private:
         // Geometry buffers
         std::unique_ptr<VertexArray> m_VertexArray;
