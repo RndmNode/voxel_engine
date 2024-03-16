@@ -23,6 +23,7 @@
 #include "tests/TestBatchColorQuads.h"
 #include "tests/TestBatchTextures.h"
 #include "tests/TestVoxel.h"
+#include "tests/TestChunk.h"
 
 // #include <GL/glew.h>
 // #include <GLFW/glfw3.h>
@@ -111,6 +112,7 @@ int main(void)
         testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
         testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
         testMenu->RegisterTest<test::TestVoxel>("Voxel");
+        testMenu->RegisterTest<test::TestChunk>("Chunk");
 
         // render loop
         // -----------

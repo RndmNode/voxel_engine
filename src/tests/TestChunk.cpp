@@ -1,9 +1,8 @@
-// #include <GL/glew.h>
 
-#include "TestVoxel.h"
-// #include "../renderer.h"
+#include "TestChunk.h"
+
 #include "../vertex_buffer_layout.h"
-#include "../vendor/imgui/imgui.h"
+#include "../vendor/glm/gtc/matrix_transform.hpp"
 
 unsigned int const voxel_indices[36] = {
     // 0, 1, 2, 2, 3, 0, // front
@@ -27,10 +26,10 @@ unsigned int const voxel_indices[36] = {
 };
 
 namespace test {
-    TestVoxel::TestVoxel()
+    TestChunk::TestChunk()
         : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
     {
-
+        
         // Build layout for vertex buffer
         VertexBufferLayout layout;
         layout.Push<float>(3);          // vertices
@@ -60,13 +59,14 @@ namespace test {
         GLCall(glEnable(GL_CULL_FACE));
         GLCall(glCullFace(GL_FRONT));
         GLCall(glFrontFace(GL_CW));
+        
     }
     
-    TestVoxel::~TestVoxel()
+    TestChunk::~TestChunk()
     {
     }
     
-    void TestVoxel::OnUpdate(GLFWwindow *window, float deltaTime)
+    void TestChunk::OnUpdate(GLFWwindow *window, float deltaTime)
     {
         // Movement speed
         float cameraSpeed = 2.5f * deltaTime;
@@ -82,29 +82,23 @@ namespace test {
             m_Cam_Pos += glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * cameraSpeed;
     }
     
-    void TestVoxel::OnRender()
+    void TestChunk::OnRender()
     {
+        // Clear the screen
         GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        glm::mat4 model = glm::mat4(1.0);                                                                   // Model identity matrix
-        model = glm::translate(model, glm::vec3(m_Translation[0], m_Translation[1], m_Translation[2]));     // Model translation
-        model = glm::scale(model, glm::vec3(m_Scale));                                                      // Model scale
+        // Model transformation
+        glm::mat4 model = glm::mat4(1.0);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));     // Model translation
+        model = glm::scale(model, glm::vec3(1.0));         // Model scale
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.2f));
 
-        // Buttons to toggle rotation, projection, and view
-        if (m_rotate_toggle)
-        {
-            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.2f));
-        } else {
-            model = model;
-        }
-
-        // camera
+        // Camera
         m_Projection = glm::perspective(glm::radians(m_FOV), (float)900/(float)900, 0.1f, 100.0f);
         m_View = glm::lookAt(m_Cam_Pos, m_Cam_Pos + m_CameraFront, m_CameraUp);       // Free Camera (no pitch or yaw)
-        // m_View = glm::lookAt(m_Cam_Pos, glm::vec3(m_Translation[0], m_Translation[1], m_Translation[2]), m_CameraUp);       // Camera with focus on voxel
 
-        // instantiate renderer
+        // Instantiate renderer
         Renderer renderer;
         m_Texture->Bind(0);
 
@@ -118,24 +112,12 @@ namespace test {
         m_Shader->SetUniformMat4f("u_View", m_View);
         m_Shader->SetUniformMat4f("u_Projection", m_Projection);
 
+        // Draw
         renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
     }
     
-    void TestVoxel::OnImGuiRender()
+    void TestChunk::OnImGuiRender()
     {
-        ImGui::Checkbox("Rotate", &m_rotate_toggle);
-        // ImGui::Checkbox("Projection with GLM", &m_proj_toggle);
-        // if (m_proj_toggle)
-        // {
-        //     ImGui::SliderFloat("Field of View", &m_FOV, 0.0f, 180.0f);
-        // }
-        // ImGui::Checkbox("Look At", &m_view_toggle);
-        // if (m_view_toggle)
-        // {
-        //     ImGui::SliderFloat3("Camera Position", (float[3]) {m_Cam_Pos.x, m_Cam_Pos.y, m_Cam_Pos.z} , -10.0f, 10.0f);
-        // }
-        ImGui::SliderFloat("Scale", &m_Scale, 0.0f, 10.0f);
-        ImGui::SliderFloat3("Translation", m_Translation, -10.0f, 10.0f);
         ImGui::Checkbox("Wireframe", &m_wire_toggle);
         if (m_wire_toggle)
         {
@@ -146,10 +128,9 @@ namespace test {
         
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
-
     }
     
-    void TestVoxel::ProcessInput(GLFWwindow *window)
+    void TestChunk::ProcessInput(GLFWwindow *window)
     {
         
     }
