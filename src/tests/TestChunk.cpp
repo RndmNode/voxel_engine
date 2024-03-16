@@ -78,14 +78,14 @@ namespace test {
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         // Model transformation
-        glm::mat4 model = glm::mat4(1.0);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));     // Model translation
-        model = glm::scale(model, glm::vec3(1.0));         // Model scale
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.2f));
+        // glm::mat4 model = glm::mat4(1.0);
+        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));     // Model translation
+        // model = glm::scale(model, glm::vec3(1.0));         // Model scale
+        // model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.2f));
 
         // Camera
-        m_Projection = glm::perspective(glm::radians(m_FOV), (float)900/(float)900, 0.1f, 100.0f);
-        m_View = glm::lookAt(m_Cam_Pos, m_Cam_Pos + m_CameraFront, m_CameraUp);       // Free Camera (no pitch or yaw)
+        // m_Projection = glm::perspective(glm::radians(m_FOV), (float)900/(float)900, 0.1f, 100.0f);
+        // m_View = glm::lookAt(m_Cam_Pos, m_Cam_Pos + m_CameraFront, m_CameraUp);       // Free Camera (no pitch or yaw)
 
         // Instantiate renderer
         Renderer renderer;
