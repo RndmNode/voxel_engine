@@ -96,7 +96,7 @@ namespace test {
         {
             model = glm::rotate(model, (float)glfwGetTime() * glm::radians(75.0f), glm::vec3(0.5f, 1.0f, 0.2f));
         } else {
-            model = model;
+            model = glm::mat4(1.0);
         }
 
         // camera

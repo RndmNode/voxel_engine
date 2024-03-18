@@ -3,6 +3,8 @@
 // #include <string>
 // #include <sstream>
 // #include <iomanip>
+#include <sys/resource.h>
+#include <unistd.h>
 
 #include "renderer.h"
 #include "vertex_buffer.h"
@@ -40,14 +42,23 @@
         as well as learning strategies for optimizing performance.
 */
 
+// Profiling function
+long get_memory_usage()
+{
+    struct rusage usage;
+    getrusage(RUSAGE_SELF, &usage);
+    return usage.ru_maxrss;
+}
+
+// user input functions
 void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
-const unsigned int SCR_WIDTH = 900;
-const unsigned int SCR_HEIGHT = 900;
+unsigned int SCR_WIDTH = 900;
+unsigned int SCR_HEIGHT = 900;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -90,9 +101,6 @@ int main(void)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-
-    // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -157,6 +165,10 @@ int main(void)
             // Test framework
             if (currentTest)
             {
+                if (currentTest != testMenu)
+                    // tell GLFW to capture our mouse
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+
                 // pass projection matrix to shader (note that in this case it could change every frame)
                 glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
                 glm::mat4 view = camera.GetViewMatrix();
@@ -178,6 +190,7 @@ int main(void)
 
                 // Render
                 currentTest->OnImGuiRender();
+                ImGui::Text("\n\nMemory Usage: %ld KB", get_memory_usage());
                 ImGui::End();
             }
 
