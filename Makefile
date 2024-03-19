@@ -1,7 +1,7 @@
 CC		=	/usr/bin/clang++
 
 CFLAGS	=	-std=c++17 -fcolor-diagnostics -Wall -fansi-escape-codes \
-			-g -I./include -L./lib -Wno-deprecated
+			-I./include -L./lib -Wno-deprecated -Wno-int-to-void-pointer-cast
 
 LIBS	=	-framework OpenGL -framework Cocoa -framework IOKit \
 			-framework CoreVideo -framework CoreFoundation

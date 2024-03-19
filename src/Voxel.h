@@ -24,7 +24,7 @@
 class Voxel
 {
 public:
-    Voxel(float x, float y, float z, float size = 1.0f);
+    Voxel(float x=0.0f, float y=0.0f, float z=0.0f, float size=1.0f);
     ~Voxel();
     float getX() { return m_X; }
     float getY() { return m_Y; }
@@ -34,12 +34,14 @@ public:
     void setY(float y) { m_Y = y; }
     void setZ(float z) { m_Z = z; }
     void setSize(float size) { m_Size = size; }
+    void setActive(bool active) { m_Active = active; }
 
-    void setVertexPositions();
-
+    // void setVertexPositions();
+    bool m_Active = true;
     float m_Vertices[40];
     // float m_Indices[36];
 private:
     float m_X, m_Y, m_Z;
     float m_Size;
+    
 };

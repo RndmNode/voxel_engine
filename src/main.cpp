@@ -61,7 +61,7 @@ unsigned int SCR_WIDTH = 900;
 unsigned int SCR_HEIGHT = 900;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 24.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -165,10 +165,6 @@ int main(void)
             // Test framework
             if (currentTest)
             {
-                if (currentTest != testMenu)
-                    // tell GLFW to capture our mouse
-                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
-
                 // pass projection matrix to shader (note that in this case it could change every frame)
                 glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
                 glm::mat4 view = camera.GetViewMatrix();
@@ -190,7 +186,7 @@ int main(void)
 
                 // Render
                 currentTest->OnImGuiRender();
-                ImGui::Text("\n\nMemory Usage: %ld KB", get_memory_usage());
+                ImGui::Text("Memory Usage: %ld KB", get_memory_usage());
                 ImGui::End();
             }
 
@@ -232,6 +228,10 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
