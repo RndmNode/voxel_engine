@@ -102,6 +102,9 @@ int main(void)
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
+    // disable vsync to enable FPS > 120 (for performance testing)
+    glfwSwapInterval(0);
+
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();

@@ -28,8 +28,10 @@ unsigned int const voxel_indices[36] = {
 
 namespace test {
     TestVoxel::TestVoxel()
-        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
+        // : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
     {
+
+        m_Voxel = Voxel();
 
         // Build layout for vertex buffer
         VertexBufferLayout layout;

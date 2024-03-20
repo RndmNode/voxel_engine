@@ -16,7 +16,7 @@ unsigned int const voxel_indices[36] = {
 
 namespace test {
     TestChunk::TestChunk()
-        : m_Voxel(0.0f, 0.0f, 0.0f, 1.0f)
+        : m_Voxel({glm::vec3(0.0f, 0.0f, 0.0f), 1.0f})
     {
         
         // Build layout for vertex buffer
