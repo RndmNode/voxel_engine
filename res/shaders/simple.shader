@@ -2,7 +2,7 @@
 #version 330 core
 
 layout (location = 0) in vec4 a_Position;
-layout (location = 1) in vec2 a_TexCoord;
+// layout (location = 1) in vec2 a_TexCoord;
 
 // model view projection matrix
 // uniform mat4 u_MVP;
@@ -16,8 +16,8 @@ out vec2 tex_coords;
 void main()
 {
    gl_Position = u_Projection * u_View * u_Model * a_Position;
-   tex_coords = a_TexCoord;
-   color_coords = a_Position;;
+   // tex_coords = a_TexCoord;
+   color_coords = a_Position;
 }
 
 #shader fragment
@@ -26,12 +26,12 @@ void main()
 layout (location = 0) out vec4 color;
 
 in vec4 color_coords;
-in vec2 tex_coords;
+// in vec2 tex_coords;
 
-uniform sampler2D u_Texture;
+// uniform sampler2D u_Texture;
 
 void main()
 {
-   vec4 texColor = texture(u_Texture, tex_coords);
-   color = texColor;
+   // vec4 texColor = texture(u_Texture, tex_coords);
+   color = vec4(0.8, 0.8, 0.8, 1.0);
 }

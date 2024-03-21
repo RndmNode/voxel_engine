@@ -112,7 +112,7 @@ namespace test {
 
         // Set Dynamic Vertex Buffer
         m_VertexBuffer->Bind();
-        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 5 * 8, m_Voxel.m_Vertices));
+        // GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 5 * 8, m_Voxel.m_Vertices));
 
         // Send MVP matrices to Shader
         m_Shader->Bind();
