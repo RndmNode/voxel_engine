@@ -4,49 +4,26 @@
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../Camera.h"
 
-// unsigned int const voxel_indices[36] = {
-//     0, 1, 2, 1, 3, 4,
-//     5, 6, 3, 7, 3, 6,
-//     2, 4, 7, 0, 7, 6,
-//     0, 5, 1, 1, 5, 3,
-//     5, 0, 6, 7, 4, 3,
-//     2, 1, 4, 0, 2, 7
-// };
+const std::array<float, 12> FRONT_FACE_VERTICES = {
+    0.0f, 0.0f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f
+};
 
 namespace test {
     TestChunk::TestChunk()
         : m_Chunk(new Chunk())
     {
         
-        // Build layout for vertex buffer
-        VertexBufferLayout layout;
-        layout.Push<float>(3);          // vertices
-        // layout.Push<float>(2);          // texture coordinates
-
-        // Set vertex buffer
-        m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, sizeof(float) * 8 * 3);
-        m_VertexArray = std::make_unique<VertexArray>();
-        m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
-
-        // Set Index buffer
-        m_IndexBuffer = std::make_unique<IndexBuffer>(&m_Chunk->GetMesh().m_Indices[0], m_Chunk->GetIndiciesCount());
-
-        // Set Shader
-        m_Shader = std::make_unique<Shader>("res/shaders/simple.shader");
-        m_Shader->Bind();
-
-        // Set Texture
-        // std::string path = "res/textures/Tile.png";
-        // m_Texture = std::make_unique<Texture>(path);
-        // m_Shader->SetUniform1i("u_Texture", 0);
 
         // Enable Depth Buffer
         GLCall(glEnable(GL_DEPTH_TEST));
 
         // Enable Face Culling
-        GLCall(glEnable(GL_CULL_FACE));
-        GLCall(glCullFace(GL_FRONT));
-        GLCall(glFrontFace(GL_CW));
+        // GLCall(glEnable(GL_CULL_FACE));
+        // GLCall(glCullFace(GL_FRONT));
+        // GLCall(glFrontFace(GL_CW));
     }
     
     TestChunk::~TestChunk()
@@ -62,8 +39,6 @@ namespace test {
         // if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
         //     m_Chunk->m_AllVoxelsActive = !m_Chunk->m_AllVoxelsActive;
         //     m_Chunk->SetVoxelsActiveState();
-
-        
     }
     
     void TestChunk::OnRender()
@@ -84,14 +59,6 @@ namespace test {
         } else {
             GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
         }
-
-        // Instantiate renderer
-        Renderer renderer;
-        m_Shader->Bind();
-        m_VertexArray->Bind();
-        m_IndexBuffer->Bind();
-        GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 4, m_Chunk->GetFaces()));
-        GLCall(glBindVertexArray(0));
     }
     
     void TestChunk::OnImGuiRender()

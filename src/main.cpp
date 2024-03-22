@@ -170,7 +170,8 @@ int main(void)
             {
                 // pass projection matrix to shader (note that in this case it could change every frame)
                 glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-                glm::mat4 view = camera.GetViewMatrix();
+                // glm::mat4 view = camera.GetViewMatrix();
+                glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
                 glm::mat4 model = glm::mat4(1.0f);
                 currentTest->SetMVP(model, view, projection);
                 
