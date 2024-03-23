@@ -25,8 +25,10 @@ namespace test {
         
     }
     
-    void test_template::ProcessInput(GLFWwindow *window)
+    void test_template::SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection)
     {
         
     }
+
+    
 }

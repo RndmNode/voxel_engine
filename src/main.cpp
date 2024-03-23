@@ -27,6 +27,7 @@
 #include "tests/TestBatchTextures.h"
 #include "tests/TestVoxel.h"
 #include "tests/TestChunk.h"
+#include "tests/TestInstancing.h"
 
 // #include <GL/glew.h>
 // #include <GLFW/glfw3.h>
@@ -142,6 +143,7 @@ int main(void)
         testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
         // testMenu->RegisterTest<test::TestVoxel>("Voxel");
         testMenu->RegisterTest<test::TestChunk>("Chunk");
+        testMenu->RegisterTest<test::TestInstancing>("Instancing");
 
         // render loop
         // -----------
