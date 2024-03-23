@@ -1,13 +1,25 @@
 #include "TestInstancing.h"
 
+// const float FRONT_FACE_VERTICES[] = {
+//     0.0f, 0.0f, 0.0f,
+//     1.0f, 0.0f, 0.0f,
+//     1.0f, 1.0f, 0.0f,
+
+//     1.0f, 1.0f, 0.0f,
+//     0.0f, 1.0f, 0.0f,
+//     0.0f, 0.0f, 0.0f
+// };
+
 const float FRONT_FACE_VERTICES[] = {
     0.0f, 0.0f, 0.0f,
     1.0f, 0.0f, 0.0f,
     1.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f
+};
 
-    1.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f
+unsigned int indices[] = {
+    0, 1, 2,
+    2, 3, 0
 };
 
 namespace test {
@@ -37,13 +49,16 @@ namespace test {
         // Generate Vertex Array and Vertex Buffer
         GLCall(glGenVertexArrays(1, &m_VertexArray));
         GLCall(glGenBuffers(1, &m_VertexBuffer));
+        GLCall(glGenBuffers(1, &m_IndexBuffer));
 
         // Bind Vertex Array and Vertex Buffer
         GLCall(glBindVertexArray(m_VertexArray));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer));
 
         // Fill Vertex Buffer with data
         GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(FRONT_FACE_VERTICES), FRONT_FACE_VERTICES, GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
         // Set Vertex Attributes
         GLCall(glEnableVertexAttribArray(0));
@@ -52,6 +67,7 @@ namespace test {
         glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribDivisor(0, 0);
         glVertexAttribDivisor(1, 1);
 
         // Set Shader
@@ -90,7 +106,8 @@ namespace test {
 
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_InstanceCount);
+        // glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_InstanceCount);
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_InstanceCount);
         GLCall(glBindVertexArray(0));
     }
     
