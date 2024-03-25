@@ -6,6 +6,8 @@
 #include "../vendor/imgui/imgui.h"
 #include "../vertex_buffer_layout.h"
 
+#include "../Voxel.h"
+
 namespace test
 {
     class TestInstancing : public Test {
@@ -18,7 +20,8 @@ namespace test
         void OnImGuiRender() override;
         void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
     private:
-        unsigned int m_InstanceCount = 25;
+        unsigned int m_InstanceCount = 5;
+        unsigned int m_NumFaces = 6;
 
         unsigned int m_VertexBuffer;
         unsigned int m_VertexArray;
@@ -30,5 +33,6 @@ namespace test
         // Render settings
         bool m_wire_toggle = false;
         bool m_mouse_captured = true;
+        bool cull_face = true;
     };
 } // namespace test
