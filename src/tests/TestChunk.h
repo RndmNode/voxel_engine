@@ -2,7 +2,7 @@
 
 #include "Test.h"
 
-#include "../Voxel.h"
+// #include "../Voxel.h"
 #include "../vertex_array.h"
 #include "../index_buffer.h"
 #include "../vertex_buffer.h"
@@ -29,11 +29,15 @@ namespace test
         // void ProcessInput(GLFWwindow *window) override;
     private:
         // Geometry buffers
-        std::unique_ptr<VertexArray> m_VertexArray;
-        std::unique_ptr<VertexBuffer> m_VertexBuffer;
-        std::unique_ptr<IndexBuffer> m_IndexBuffer;
+        // std::unique_ptr<VertexArray> m_VertexArray;
+        // std::unique_ptr<VertexBuffer> m_VertexBuffer;
+        // std::unique_ptr<IndexBuffer> m_IndexBuffer;
         std::unique_ptr<Shader> m_Shader;
-        std::unique_ptr<Texture> m_Texture;
+        // std::unique_ptr<Texture> m_Texture;
+
+        unsigned int m_VertexBuffer;
+        unsigned int m_VertexArray;
+        unsigned int m_IndexBuffer;
         unsigned int m_InstanceBuffer;
 
         // Render settings

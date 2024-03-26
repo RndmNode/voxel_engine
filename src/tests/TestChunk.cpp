@@ -4,24 +4,62 @@
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../Camera.h"
 
-const std::array<float, 12> FRONT_FACE_VERTICES = {
-    0.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f
-};
+// const float FRONT_FACE_VERTICES[] = {
+// //   x     y     z   
+//     0.0f, 0.0f, 0.0f, 
+//     1.0f, 0.0f, 0.0f,
+//     1.0f, 1.0f, 0.0f,
+//     0.0f, 1.0f, 0.0f
+// };
+// const unsigned int indices[] = {
+//     0, 1, 2,
+//     2, 3, 0
+// };
 
 namespace test {
     TestChunk::TestChunk()
         : m_Chunk(new Chunk())
     {
         
+        // Generate Instance Buffer
+        GLCall(glGenBuffers(1, &m_InstanceBuffer));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_Chunk->GetFaces(), &m_Chunk->m_Mesh.m_Instances[0], GL_STATIC_DRAW));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+        // Generate Vertex Array and Vertex Buffer
+        GLCall(glGenVertexArrays(1, &m_VertexArray));
+        GLCall(glGenBuffers(1, &m_VertexBuffer));
+        GLCall(glGenBuffers(1, &m_IndexBuffer));
+
+        // Bind Vertex Array and Vertex Buffer
+        GLCall(glBindVertexArray(m_VertexArray));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer));
+
+        // Fill Vertex Buffer with data
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES), Voxel::FRONT_FACE_VERTICES, GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Voxel::indices), Voxel::indices, GL_STATIC_DRAW));
+
+        // Set Vertex Attributes
+        GLCall(glEnableVertexAttribArray(0));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        GLCall(glEnableVertexAttribArray(1));
+        glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glVertexAttribDivisor(0, 0);
+        glVertexAttribDivisor(1, 1);
+
+        // Set Shader
+        m_Shader = std::make_unique<Shader>("res/shaders/simple.shader");
+        m_Shader->Bind();
 
         // Enable Depth Buffer
         GLCall(glEnable(GL_DEPTH_TEST));
 
         // Enable Face Culling
-        // GLCall(glEnable(GL_CULL_FACE));
+        GLCall(glEnable(GL_CULL_FACE));
         // GLCall(glCullFace(GL_FRONT));
         // GLCall(glFrontFace(GL_CW));
     }
@@ -36,9 +74,6 @@ namespace test {
             m_wire_toggle = !m_wire_toggle;
         if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
             m_mouse_captured = !m_mouse_captured;
-        // if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-        //     m_Chunk->m_AllVoxelsActive = !m_Chunk->m_AllVoxelsActive;
-        //     m_Chunk->SetVoxelsActiveState();
     }
     
     void TestChunk::OnRender()
@@ -59,16 +94,20 @@ namespace test {
         } else {
             GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
         }
+
+        m_Shader->Bind();
+        GLCall(glBindVertexArray(m_VertexArray));
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_Chunk->GetFaces());
+        GLCall(glBindVertexArray(0));
     }
     
     void TestChunk::OnImGuiRender()
     {
         ImGui::Text("Press 'F' to toggle wireframe mode: %s", (m_wire_toggle ? "on" : "off"));
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
-        // ImGui::Text("Press 'V' to toggle all voxels active: %s", (m_Chunk->m_AllVoxelsActive ? "on" : "off"));
         ImGui::Text("Faces: %d", m_Chunk->GetFaces());
-        ImGui::Text("Indicies: %d", m_Chunk->GetIndiciesCount());
-        ImGui::Text("Vertices: %d", m_Chunk->GetMesh().m_Vertices.size() / 3);
+        // ImGui::Text("Indicies: %d", m_Chunk->GetIndiciesCount());
+        // ImGui::Text("Vertices: %d", m_Chunk->GetMesh().m_Vertices.size() / 3);
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
     }

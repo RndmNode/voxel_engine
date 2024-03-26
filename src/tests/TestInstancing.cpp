@@ -1,17 +1,17 @@
 #include "TestInstancing.h"
+#include "../Voxel.h"
 
-const float FRONT_FACE_VERTICES[] = {
-//   x     y     z   
-    0.0f, 0.0f, 0.0f, 
-    1.0f, 0.0f, 0.0f,
-    1.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f
-};
-
-unsigned int indices[] = {
-    0, 1, 2,
-    2, 3, 0
-};
+// const float FRONT_FACE_VERTICES[] = {
+// //   x     y     z   
+//     0.0f, 0.0f, 0.0f, 
+//     1.0f, 0.0f, 0.0f,
+//     1.0f, 1.0f, 0.0f,
+//     0.0f, 1.0f, 0.0f
+// };
+// const unsigned int indices[] = {
+//     0, 1, 2,
+//     2, 3, 0
+// };
 
 namespace test {
     TestInstancing::TestInstancing()
@@ -29,19 +29,19 @@ namespace test {
             translation.w = 0.0f;
             translations[index++] = translation;
 
-            translation.w = float(VoxelFace::BACK);
+            translation.w = float(Voxel::VoxelFace::BACK);
             translations[index++] = translation;
 
-            translation.w = float(VoxelFace::LEFT);
+            translation.w = float(Voxel::VoxelFace::LEFT);
             translations[index++] = translation;
 
-            translation.w = float(VoxelFace::RIGHT);
+            translation.w = float(Voxel::VoxelFace::RIGHT);
             translations[index++] = translation;
 
-            translation.w = float(VoxelFace::TOP);
+            translation.w = float(Voxel::VoxelFace::TOP);
             translations[index++] = translation;
 
-            translation.w = float(VoxelFace::BOTTOM);
+            translation.w = float(Voxel::VoxelFace::BOTTOM);
             translations[index++] = translation;
 
             offset_x++;
@@ -51,7 +51,7 @@ namespace test {
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(FRONT_FACE_VERTICES) * m_InstanceCount * m_NumFaces, &translations[0], GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_InstanceCount * m_NumFaces, &translations[0], GL_STATIC_DRAW));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
         // Generate Vertex Array and Vertex Buffer
@@ -65,8 +65,8 @@ namespace test {
         GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer));
 
         // Fill Vertex Buffer with data
-        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(FRONT_FACE_VERTICES), FRONT_FACE_VERTICES, GL_STATIC_DRAW));
-        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES), Voxel::FRONT_FACE_VERTICES, GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Voxel::indices), Voxel::indices, GL_STATIC_DRAW));
 
         // Set Vertex Attributes
         GLCall(glEnableVertexAttribArray(0));

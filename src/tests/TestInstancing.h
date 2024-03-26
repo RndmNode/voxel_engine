@@ -6,8 +6,6 @@
 #include "../vendor/imgui/imgui.h"
 #include "../vertex_buffer_layout.h"
 
-#include "../Voxel.h"
-
 namespace test
 {
     class TestInstancing : public Test {

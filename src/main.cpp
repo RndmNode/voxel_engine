@@ -21,11 +21,9 @@
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
-#include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestBatchColorQuads.h"
 #include "tests/TestBatchTextures.h"
-#include "tests/TestVoxel.h"
 #include "tests/TestChunk.h"
 #include "tests/TestInstancing.h"
 
@@ -62,7 +60,7 @@ unsigned int SCR_WIDTH = 900;
 unsigned int SCR_HEIGHT = 900;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 2.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -137,11 +135,9 @@ int main(void)
         currentTest = testMenu;
 
         // Add tests to executable
-        testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
         testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
         testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
-        // testMenu->RegisterTest<test::TestVoxel>("Voxel");
         testMenu->RegisterTest<test::TestChunk>("Chunk");
         testMenu->RegisterTest<test::TestInstancing>("Instancing");
 

@@ -19,32 +19,30 @@ void main()
    if (a_Offset.w == 1)    // Back Face
    {
       pos.xy = pos.yx;
-      pos.z--;
    }
    else if (a_Offset.w == 2)   // Left Face
    {
       pos.xz = pos.zx;
-      pos.z--;
    }
    else if (a_Offset.w == 3)   // Right Face
    {
       pos.xz = pos.zx;
       pos.yz = pos.zy;
       pos.x++;
-      pos.z--;
    }
    else if (a_Offset.w == 4)   // Top Face
    {
       pos.yz = pos.zy;
       pos.xz = pos.zx;
       pos.y++;
-      pos.z--;
    }
    else if (a_Offset.w == 5)   // Bottom Face
    {
       pos.zy = pos.yz;
-      pos.z--;
    }
+
+   if (a_Offset.w > 0)
+      pos.z--;
 
    gl_Position = u_Projection * u_View * u_Model * (vec4(pos, 1.0) + vec4(a_Offset.xyz, 0.0));
    color_coords = vec4(a_Position, 1.0);
