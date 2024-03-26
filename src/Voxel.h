@@ -2,7 +2,7 @@
 
 #define VOXEL_SIZE 1.0f
 
-#include <array>
+#include <string>
 
 #include "vendor/glm/glm.hpp"
 
@@ -28,6 +28,20 @@ namespace Voxel {
         RIGHT,
         TOP,
         BOTTOM
+    };
+
+    inline std::string VoxelFaceToString(VoxelFace face)
+    {
+        switch (face)
+        {
+            case FRONT:     return "FRONT";
+            case BACK:      return "BACK";
+            case LEFT:      return "LEFT";
+            case RIGHT:     return "RIGHT";
+            case TOP:       return "TOP";
+            case BOTTOM:    return "BOTTOM";
+            default:        return "UNKNOWN";
+        }
     };
 
     enum VoxelType

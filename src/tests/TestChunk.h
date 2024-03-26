@@ -43,8 +43,7 @@ namespace test
         // Render settings
         bool m_wire_toggle = false;
         bool m_mouse_captured = true;
-        // bool m_AllVoxelsActive = true;
-        // glm::mat4 m_Model = glm::mat4(1.0);
+        bool cull_face = true;
 
         // Voxel m_Voxel;
         Chunk* m_Chunk;

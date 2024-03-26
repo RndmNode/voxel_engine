@@ -1,8 +1,6 @@
 #include "Chunk.h"
 
-#include <cstdint>
-#include <vector>
-#include <array>
+#include <iostream>
 
 Chunk::Chunk()
 {
@@ -13,12 +11,11 @@ Chunk::Chunk()
         {
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
-                m_Voxels[i][j][k].m_Type = Voxel::VoxelType::SOLID;
+                m_Voxels[i][j][k].m_Type = Voxel::SOLID;
             }
         }
-
-        BuildMesh();
     }
+    BuildMesh();
 }
 
 Chunk::~Chunk()
@@ -37,15 +34,15 @@ void Chunk::OnUpdate()
 
 void Chunk::BuildMesh()
 {
-    for (uint16_t i = 0; i < CHUNK_VOLUME; i++)
+    for (int i = 0; i < CHUNK_VOLUME; i++)
     {
         // Get voxel position
-        uint8_t x = i % CHUNK_SIZE;
-        uint8_t y = i / (CHUNK_SIZE * CHUNK_SIZE);
-        uint8_t z = (i / CHUNK_SIZE) % CHUNK_SIZE;
+        int x = i % CHUNK_SIZE;
+        int y = i / (CHUNK_SIZE * CHUNK_SIZE);
+        int z = (i / CHUNK_SIZE) % CHUNK_SIZE;
 
         // Get voxel type
-        if (m_Voxels[x][y][z].m_Type == Voxel::VoxelType::AIR)
+        if (m_Voxels[x][y][z].m_Type == Voxel::AIR)
         {
             continue;
         }
@@ -54,9 +51,11 @@ void Chunk::BuildMesh()
         NeighborList neighbors = GetNeighbors(x, y, z);
         for (auto neighbor : neighbors)
         {
-            Voxel::VoxelFace face = std::get<0>(neighbor);
-            Voxel::VoxelType type = std::get<1>(neighbor);
-            if (type == Voxel::VoxelType::AIR)
+            // Get neighbor face and type
+            Voxel::VoxelFace face = neighbor.m_Face;
+            Voxel::VoxelType type = neighbor.m_Type;
+
+            if (type == Voxel::AIR)
             {
                 // Increment face count
                 m_Faces++;
@@ -68,25 +67,25 @@ void Chunk::BuildMesh()
     }
 }
 
-NeighborList Chunk::GetNeighbors(uint8_t x, uint8_t y, uint8_t z)
+NeighborList Chunk::GetNeighbors(int x, int y, int z)
 {
     NeighborList neighbors;
 
     // Add neighbors that are out of bounds
-    if (x <= 0)                  neighbors.push_back(std::make_tuple(Voxel::VoxelFace::LEFT,    Voxel::VoxelType::AIR));
-    if (x >= CHUNK_SIZE - 1)     neighbors.push_back(std::make_tuple(Voxel::VoxelFace::RIGHT,   Voxel::VoxelType::AIR));
-    if (y <= 0)                  neighbors.push_back(std::make_tuple(Voxel::VoxelFace::BOTTOM,  Voxel::VoxelType::AIR));
-    if (y >= CHUNK_SIZE - 1)     neighbors.push_back(std::make_tuple(Voxel::VoxelFace::TOP,     Voxel::VoxelType::AIR));
-    if (z <= 0)                  neighbors.push_back(std::make_tuple(Voxel::VoxelFace::BACK,    Voxel::VoxelType::AIR));
-    if (z >= CHUNK_SIZE - 1)     neighbors.push_back(std::make_tuple(Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR));
+    if (x <= 0)                  neighbors.push_back({Voxel::VoxelFace::LEFT,    Voxel::VoxelType::AIR});
+    if (x >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::RIGHT,   Voxel::VoxelType::AIR});
+    if (y <= 0)                  neighbors.push_back({Voxel::VoxelFace::BOTTOM,  Voxel::VoxelType::AIR});
+    if (y >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::TOP,     Voxel::VoxelType::AIR});
+    if (z <= 0)                  neighbors.push_back({Voxel::VoxelFace::BACK,    Voxel::VoxelType::AIR});
+    if (z >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR});
 
     // Add neighbors that are in bounds
-    if (x > 0)                   neighbors.push_back(std::make_tuple(Voxel::VoxelFace::LEFT,    m_Voxels[x - 1][y][z].m_Type));
-    if (x < CHUNK_SIZE - 1)      neighbors.push_back(std::make_tuple(Voxel::VoxelFace::RIGHT,   m_Voxels[x + 1][y][z].m_Type));
-    if (y > 0)                   neighbors.push_back(std::make_tuple(Voxel::VoxelFace::BOTTOM,  m_Voxels[x][y - 1][z].m_Type));
-    if (y < CHUNK_SIZE - 1)      neighbors.push_back(std::make_tuple(Voxel::VoxelFace::TOP,     m_Voxels[x][y + 1][z].m_Type));
-    if (z > 0)                   neighbors.push_back(std::make_tuple(Voxel::VoxelFace::BACK,    m_Voxels[x][y][z - 1].m_Type));
-    if (z < CHUNK_SIZE - 1)      neighbors.push_back(std::make_tuple(Voxel::VoxelFace::FRONT,   m_Voxels[x][y][z + 1].m_Type));
+    if (x > 0)                   neighbors.push_back({Voxel::VoxelFace::LEFT,    m_Voxels[x - 1][y][z].m_Type});
+    if (x < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::RIGHT,   m_Voxels[x + 1][y][z].m_Type});
+    if (y > 0)                   neighbors.push_back({Voxel::VoxelFace::BOTTOM,  m_Voxels[x][y - 1][z].m_Type});
+    if (y < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::TOP,     m_Voxels[x][y + 1][z].m_Type});
+    if (z > 0)                   neighbors.push_back({Voxel::VoxelFace::BACK,    m_Voxels[x][y][z - 1].m_Type});
+    if (z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[x][y][z + 1].m_Type});
 
     return neighbors;
 }

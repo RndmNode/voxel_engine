@@ -16,36 +16,45 @@ void main()
    // save position in editable variable
    vec3 pos = a_Position;
 
-   if (a_Offset.w == 1)    // Back Face
+   if (a_Offset.w == 0)    // Front Face
+   {
+      color_coords = vec4(1.0, 1.0, 1.0, 1.0); // white
+   }
+   else if (a_Offset.w == 1)    // Back Face
    {
       pos.xy = pos.yx;
+      color_coords = vec4(1.0, 0.0, 0.0, 1.0); // red
    }
    else if (a_Offset.w == 2)   // Left Face
    {
       pos.xz = pos.zx;
+      color_coords = vec4(0.0, 1.0, 0.0, 1.0); // green
    }
    else if (a_Offset.w == 3)   // Right Face
    {
       pos.xz = pos.zx;
       pos.yz = pos.zy;
       pos.x++;
+      color_coords = vec4(0.0, 0.0, 1.0, 1.0); // blue
    }
    else if (a_Offset.w == 4)   // Top Face
    {
       pos.yz = pos.zy;
       pos.xz = pos.zx;
       pos.y++;
+      color_coords = vec4(1.0, 1.0, 0.0, 1.0); // yellow
    }
    else if (a_Offset.w == 5)   // Bottom Face
    {
       pos.zy = pos.yz;
+      color_coords = vec4(1.0, 0.0, 1.0, 1.0); // purple
    }
 
    if (a_Offset.w > 0)
       pos.z--;
 
    gl_Position = u_Projection * u_View * u_Model * (vec4(pos, 1.0) + vec4(a_Offset.xyz, 0.0));
-   color_coords = vec4(a_Position, 1.0);
+   // color_coords = vec4(a_Position, 1.0);
 }
 
 #shader fragment
@@ -57,6 +66,5 @@ in vec4 color_coords;
 
 void main()
 {
-   // color = vec4(0.5, 0.5, 0.5, 1.0);
    color = color_coords;
 }

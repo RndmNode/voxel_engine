@@ -74,6 +74,8 @@ namespace test {
             m_wire_toggle = !m_wire_toggle;
         if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
             m_mouse_captured = !m_mouse_captured;
+        if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
+            cull_face = !cull_face;
     }
     
     void TestChunk::OnRender()
@@ -95,6 +97,12 @@ namespace test {
             GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
         }
 
+        // Face Culling
+        if (cull_face)
+            glEnable(GL_CULL_FACE);
+        else
+            glDisable(GL_CULL_FACE);
+
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_Chunk->GetFaces());
@@ -105,6 +113,7 @@ namespace test {
     {
         ImGui::Text("Press 'F' to toggle wireframe mode: %s", (m_wire_toggle ? "on" : "off"));
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
+        ImGui::Text("Press 'V' to toggle face culling: %s", (cull_face ? "on" : "off"));
         ImGui::Text("Faces: %d", m_Chunk->GetFaces());
         // ImGui::Text("Indicies: %d", m_Chunk->GetIndiciesCount());
         // ImGui::Text("Vertices: %d", m_Chunk->GetMesh().m_Vertices.size() / 3);
