@@ -4,27 +4,16 @@
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../Camera.h"
 
-// const float FRONT_FACE_VERTICES[] = {
-// //   x     y     z   
-//     0.0f, 0.0f, 0.0f, 
-//     1.0f, 0.0f, 0.0f,
-//     1.0f, 1.0f, 0.0f,
-//     0.0f, 1.0f, 0.0f
-// };
-// const unsigned int indices[] = {
-//     0, 1, 2,
-//     2, 3, 0
-// };
-
 namespace test {
     TestChunk::TestChunk()
         : m_Chunk(new Chunk())
     {
+        std::cout << m_Chunk->GetFaces() << std::endl;
         
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_Chunk->GetFaces(), &m_Chunk->m_Mesh.m_Instances[0], GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_Chunk->GetFaces(), &m_Chunk->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
         // Generate Vertex Array and Vertex Buffer
@@ -60,8 +49,6 @@ namespace test {
 
         // Enable Face Culling
         GLCall(glEnable(GL_CULL_FACE));
-        // GLCall(glCullFace(GL_FRONT));
-        // GLCall(glFrontFace(GL_CW));
     }
     
     TestChunk::~TestChunk()
@@ -115,8 +102,6 @@ namespace test {
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
         ImGui::Text("Press 'V' to toggle face culling: %s", (cull_face ? "on" : "off"));
         ImGui::Text("Faces: %d", m_Chunk->GetFaces());
-        // ImGui::Text("Indicies: %d", m_Chunk->GetIndiciesCount());
-        // ImGui::Text("Vertices: %d", m_Chunk->GetMesh().m_Vertices.size() / 3);
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
     }

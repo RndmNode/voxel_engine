@@ -3,6 +3,7 @@
 #include <iostream>
 
 Chunk::Chunk()
+    : m_Mesh(new Mesh())
 {
     // Set all voxels to solid
     for (int i = 0; i < CHUNK_SIZE; i++)
@@ -11,7 +12,7 @@ Chunk::Chunk()
         {
             for (int k = 0; k < CHUNK_SIZE; k++)
             {
-                m_Voxels[i][j][k].m_Type = Voxel::SOLID;
+                m_Voxels[i][j][k] = new Voxel::VoxelData({Voxel::SOLID});
             }
         }
     }
@@ -42,7 +43,7 @@ void Chunk::BuildMesh()
         int z = (i / CHUNK_SIZE) % CHUNK_SIZE;
 
         // Get voxel type
-        if (m_Voxels[x][y][z].m_Type == Voxel::AIR)
+        if (m_Voxels[x][y][z]->m_Type == Voxel::AIR)
         {
             continue;
         }
@@ -61,7 +62,7 @@ void Chunk::BuildMesh()
                 m_Faces++;
 
                 // Add instance offset to vertices
-                m_Mesh.m_Instances.push_back(glm::vec4(x, y, z, float(face)));
+                m_Mesh->m_Instances.push_back(glm::vec4(x, y, z, float(face)));
             }
         }
     }
@@ -80,12 +81,12 @@ NeighborList Chunk::GetNeighbors(int x, int y, int z)
     if (z >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR});
 
     // Add neighbors that are in bounds
-    if (x > 0)                   neighbors.push_back({Voxel::VoxelFace::LEFT,    m_Voxels[x - 1][y][z].m_Type});
-    if (x < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::RIGHT,   m_Voxels[x + 1][y][z].m_Type});
-    if (y > 0)                   neighbors.push_back({Voxel::VoxelFace::BOTTOM,  m_Voxels[x][y - 1][z].m_Type});
-    if (y < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::TOP,     m_Voxels[x][y + 1][z].m_Type});
-    if (z > 0)                   neighbors.push_back({Voxel::VoxelFace::BACK,    m_Voxels[x][y][z - 1].m_Type});
-    if (z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[x][y][z + 1].m_Type});
+    if (x > 0)                   neighbors.push_back({Voxel::VoxelFace::LEFT,    m_Voxels[x - 1][y][z]->m_Type});
+    if (x < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::RIGHT,   m_Voxels[x + 1][y][z]->m_Type});
+    if (y > 0)                   neighbors.push_back({Voxel::VoxelFace::BOTTOM,  m_Voxels[x][y - 1][z]->m_Type});
+    if (y < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::TOP,     m_Voxels[x][y + 1][z]->m_Type});
+    if (z > 0)                   neighbors.push_back({Voxel::VoxelFace::BACK,    m_Voxels[x][y][z - 1]->m_Type});
+    if (z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[x][y][z + 1]->m_Type});
 
     return neighbors;
 }

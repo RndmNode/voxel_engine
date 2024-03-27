@@ -84,9 +84,6 @@ namespace test {
 
         // Enable Render Settings
         GLCall(glEnable(GL_DEPTH_TEST));
-        // GLCall(glEnable(GL_CULL_FACE));
-        // GLCall(glCullFace(GL_FRONT));
-        // GLCall(glFrontFace(GL_CW));
     }
     
     TestInstancing::~TestInstancing()
@@ -127,7 +124,6 @@ namespace test {
 
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));
-        // glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_InstanceCount);
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, (m_InstanceCount * m_NumFaces));
         GLCall(glBindVertexArray(0));
     }

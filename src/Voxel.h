@@ -52,9 +52,6 @@ namespace Voxel {
 
     struct VoxelData
     {
-        // bool m_Active = true;
-        // glm::vec3 m_Position;
-        // glm::vec4 m_Color;
         VoxelType m_Type;
     };
 }

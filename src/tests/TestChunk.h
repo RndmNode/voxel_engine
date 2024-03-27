@@ -26,14 +26,9 @@ namespace test
         void OnRender() override;
         void OnImGuiRender() override;
         void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
-        // void ProcessInput(GLFWwindow *window) override;
     private:
         // Geometry buffers
-        // std::unique_ptr<VertexArray> m_VertexArray;
-        // std::unique_ptr<VertexBuffer> m_VertexBuffer;
-        // std::unique_ptr<IndexBuffer> m_IndexBuffer;
         std::unique_ptr<Shader> m_Shader;
-        // std::unique_ptr<Texture> m_Texture;
 
         unsigned int m_VertexBuffer;
         unsigned int m_VertexArray;

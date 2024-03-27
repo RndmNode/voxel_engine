@@ -37,8 +37,8 @@ public:
 
     NeighborList GetNeighbors(int x, int y, int z);
 
-    Voxel::VoxelData m_Voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
-    Mesh m_Mesh;
+    Voxel::VoxelData* m_Voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    Mesh* m_Mesh;
 private:
     int m_Faces = 0;
 };
