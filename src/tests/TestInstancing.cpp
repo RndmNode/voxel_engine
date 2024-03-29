@@ -1,18 +1,6 @@
 #include "TestInstancing.h"
 #include "../Voxel.h"
 
-// const float FRONT_FACE_VERTICES[] = {
-// //   x     y     z   
-//     0.0f, 0.0f, 0.0f, 
-//     1.0f, 0.0f, 0.0f,
-//     1.0f, 1.0f, 0.0f,
-//     0.0f, 1.0f, 0.0f
-// };
-// const unsigned int indices[] = {
-//     0, 1, 2,
-//     2, 3, 0
-// };
-
 namespace test {
     TestInstancing::TestInstancing()
     {

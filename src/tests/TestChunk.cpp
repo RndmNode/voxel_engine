@@ -6,7 +6,7 @@
 
 namespace test {
     TestChunk::TestChunk()
-        : m_Chunk(new Chunk())
+        : m_Chunk(new Chunk({0,0,0}))
     {
         std::cout << m_Chunk->GetFaces() << std::endl;
         

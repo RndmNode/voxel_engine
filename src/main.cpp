@@ -135,11 +135,11 @@ int main(void)
         currentTest = testMenu;
 
         // Add tests to executable
-        testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
-        testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
-        testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
-        testMenu->RegisterTest<test::TestChunk>("Chunk");
+        // testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+        // testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
+        // testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
         testMenu->RegisterTest<test::TestInstancing>("Instancing");
+        testMenu->RegisterTest<test::TestChunk>("Chunk");
 
         // render loop
         // -----------

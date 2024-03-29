@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-Chunk::Chunk()
-    : m_Mesh(new Mesh())
+Chunk::Chunk(glm::ivec3 position)
+    :   m_Mesh(new Mesh()),
+        m_Position(position)
 {
     // Set all voxels to solid
     for (int i = 0; i < CHUNK_SIZE; i++)
@@ -62,7 +63,7 @@ void Chunk::BuildMesh()
                 m_Faces++;
 
                 // Add instance offset to vertices
-                m_Mesh->m_Instances.push_back(glm::vec4(x, y, z, float(face)));
+                m_Mesh->m_Instances.push_back(glm::vec4(x + m_Position.x, y + m_Position.y, z + m_Position.z, float(face)));
             }
         }
     }

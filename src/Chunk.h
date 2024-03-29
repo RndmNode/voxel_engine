@@ -28,7 +28,7 @@ using NeighborList = std::vector<Neighbor>;
 class Chunk
 {
 public:
-    Chunk();
+    Chunk(glm::ivec3 position);
     ~Chunk();
     void OnRender();
     void OnUpdate();
@@ -41,4 +41,5 @@ public:
     Mesh* m_Mesh;
 private:
     int m_Faces = 0;
+    glm::ivec3 m_Position;
 };
