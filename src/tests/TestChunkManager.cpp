@@ -1,17 +1,19 @@
-#include "TestChunk.h"
+#include "TestChunkManager.h"
 
 // #include "../vertex_buffer_layout.h"
 // #include "../vendor/glm/gtc/matrix_transform.hpp"
 // #include "../Camera.h"
 
 namespace test {
-    TestChunk::TestChunk()
-        : m_Chunk(new Chunk({0,0}))
+    TestChunkManager::TestChunkManager()
+        : m_ChunkManager(new ChunkManager())
     {   
+        m_ChunkManager->CompileMeshes();
+        
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_Chunk->GetFaces(), &m_Chunk->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &m_ChunkManager->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
         // Generate Vertex Array and Vertex Buffer
@@ -49,11 +51,11 @@ namespace test {
         GLCall(glEnable(GL_CULL_FACE));
     }
     
-    TestChunk::~TestChunk()
+    TestChunkManager::~TestChunkManager()
     {
     }
     
-    void TestChunk::OnUpdate(GLFWwindow *window, float deltaTime)
+    void TestChunkManager::OnUpdate(GLFWwindow *window, float deltaTime)
     {
         if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
             m_wire_toggle = !m_wire_toggle;
@@ -63,7 +65,7 @@ namespace test {
             cull_face = !cull_face;
     }
     
-    void TestChunk::OnRender()
+    void TestChunkManager::OnRender()
     {
         // Clear the screen
         GLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
@@ -90,21 +92,21 @@ namespace test {
 
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));
-        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_Chunk->GetFaces());
+        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_ChunkManager->GetFaces());
         GLCall(glBindVertexArray(0));
     }
     
-    void TestChunk::OnImGuiRender()
+    void TestChunkManager::OnImGuiRender()
     {
         ImGui::Text("Press 'F' to toggle wireframe mode: %s", (m_wire_toggle ? "on" : "off"));
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
         ImGui::Text("Press 'V' to toggle face culling: %s", (cull_face ? "on" : "off"));
-        ImGui::Text("Faces: %d", m_Chunk->GetFaces());
+        ImGui::Text("Faces: %d", m_ChunkManager->GetFaces());
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
     }
     
-    void TestChunk::SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection)
+    void TestChunkManager::SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection)
     {
         m_Shader->Bind();
         m_Shader->SetUniformMat4f("u_Model", model);

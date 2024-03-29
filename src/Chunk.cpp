@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Chunk::Chunk(glm::ivec3 position)
+Chunk::Chunk(ChunkPosition position)
     :   m_Mesh(new Mesh()),
         m_Position(position)
 {
@@ -63,7 +63,7 @@ void Chunk::BuildMesh()
                 m_Faces++;
 
                 // Add instance offset to vertices
-                m_Mesh->m_Instances.push_back(glm::vec4(x + m_Position.x, y + m_Position.y, z + m_Position.z, float(face)));
+                m_Mesh->m_Instances.push_back(glm::vec4(x + m_Position.x, y, z + m_Position.z, float(face)));
             }
         }
     }

@@ -26,6 +26,7 @@
 #include "tests/TestBatchTextures.h"
 #include "tests/TestChunk.h"
 #include "tests/TestInstancing.h"
+#include "tests/TestChunkManager.h"
 
 // #include <GL/glew.h>
 // #include <GLFW/glfw3.h>
@@ -67,6 +68,8 @@ bool firstMouse = true;
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
+
+bool testStarted = false;
 
 int main(void)
 {
@@ -140,6 +143,7 @@ int main(void)
         // testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
         testMenu->RegisterTest<test::TestInstancing>("Instancing");
         testMenu->RegisterTest<test::TestChunk>("Chunk");
+        testMenu->RegisterTest<test::TestChunkManager>("Chunk Manager");
 
         // render loop
         // -----------
@@ -153,7 +157,6 @@ int main(void)
             // input
             // -----
             processInput(window);
-            // currentTest->ProcessInput(window);
 
             /* Render here */
             renderer.Clear();
@@ -168,8 +171,8 @@ int main(void)
             {
                 // pass projection matrix to shader (note that in this case it could change every frame)
                 glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-                // glm::mat4 view = camera.GetViewMatrix();
-                glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
+                glm::mat4 view = camera.GetViewMatrix();
+                
                 glm::mat4 model = glm::mat4(1.0f);
                 currentTest->SetMVP(model, view, projection);
                 

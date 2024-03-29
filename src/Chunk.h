@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Voxel.h"
 
 #define CHUNK_SIZE 32
@@ -23,12 +25,23 @@ struct Neighbor
     Voxel::VoxelType m_Type;
 };
 
+struct ChunkPosition
+{
+    ChunkPosition(int x, int z) : x(x), z(z) {}
+    int x, z;
+
+    bool operator==(const ChunkPosition& other) const
+    {
+        return x == other.x && z == other.z;
+    }
+};
+
 using NeighborList = std::vector<Neighbor>;
 
 class Chunk
 {
 public:
-    Chunk(glm::ivec3 position);
+    Chunk(ChunkPosition position);
     ~Chunk();
     void OnRender();
     void OnUpdate();
@@ -41,5 +54,5 @@ public:
     Mesh* m_Mesh;
 private:
     int m_Faces = 0;
-    glm::ivec3 m_Position;
+    ChunkPosition m_Position;
 };

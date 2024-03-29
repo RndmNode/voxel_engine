@@ -7,7 +7,8 @@
 #include "../vertex_buffer.h"
 #include "../shader.h"
 #include "../Texture.h"
-#include "../Chunk.h"
+// #include "../Chunk.h"
+#include "../ChunkManager.h"
 
 // #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../vendor/imgui/imgui.h"
@@ -16,10 +17,10 @@
 
 namespace test
 {
-    class TestChunk : public Test {
+    class TestChunkManager : public Test {
     public:
-        TestChunk();
-        ~TestChunk();
+        TestChunkManager();
+        ~TestChunkManager();
 
         void OnUpdate(GLFWwindow *window, float deltaTime) override;
         void OnRender() override;
@@ -40,6 +41,7 @@ namespace test
         bool cull_face = true;
 
         // Voxel m_Voxel;
-        Chunk* m_Chunk;
+        // Chunk* m_Chunk;
+        ChunkManager* m_ChunkManager;
     };
 } // namespace test
