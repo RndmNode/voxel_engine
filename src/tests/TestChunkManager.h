@@ -7,10 +7,8 @@
 #include "../vertex_buffer.h"
 #include "../shader.h"
 #include "../Texture.h"
-// #include "../Chunk.h"
 #include "../ChunkManager.h"
 
-// #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../vendor/imgui/imgui.h"
 
 #include <memory>

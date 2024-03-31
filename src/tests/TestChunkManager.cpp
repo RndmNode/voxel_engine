@@ -8,7 +8,7 @@ namespace test {
     TestChunkManager::TestChunkManager()
         : m_ChunkManager(new ChunkManager())
     {   
-        m_ChunkManager->CompileMeshes();
+        m_ChunkManager->BuildMesh();
         
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));

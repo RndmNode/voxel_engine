@@ -12,15 +12,6 @@ public:
     }
 };
 
-// struct comp
-// {
-//     bool operator()(const ChunkPosition& loc1, const ChunkPosition& loc2) const
-//     {
-//         //Compare the 2 locations, return true if loc1 is less than loc2
-//         return loc1.x < loc2.x || (loc1.x == loc2.x && loc1.z < loc2.z);
-//     }
-// };
-
 using ChunkMap = std::unordered_map<ChunkPosition, Chunk*, MyHashFunction>;
 
 class ChunkManager
@@ -29,11 +20,14 @@ public:
     ChunkManager();
     ~ChunkManager();
     void CompileMeshes();
+    void BuildMesh();
     unsigned int GetFaces() { return m_Faces; }
 
     Mesh* m_Mesh;
 private:
     ChunkMap m_Chunks;
     unsigned int m_Faces = 0;
+
+    NeighborList GetNeighbors(glm::ivec3 voxelPos, ChunkPosition chunkPos);
 };
 

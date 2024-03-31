@@ -17,7 +17,7 @@ Chunk::Chunk(ChunkPosition position)
             }
         }
     }
-    BuildMesh();
+    // BuildMesh();
 }
 
 Chunk::~Chunk()
