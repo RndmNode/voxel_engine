@@ -11,20 +11,6 @@
 
 #include "Voxel.h"
 
-struct Mesh
-{
-    std::vector<glm::vec4> m_Instances;
-    std::vector<float> m_Normals;
-    std::vector<float> m_TexCoords;
-    std::vector<unsigned int> m_Indices;
-};
-
-struct Neighbor
-{
-    Voxel::VoxelFace m_Face;
-    Voxel::VoxelType m_Type;
-};
-
 struct ChunkPosition
 {
     ChunkPosition(int x, int z) : x(x), z(z) {}
@@ -36,8 +22,6 @@ struct ChunkPosition
     }
 };
 
-using NeighborList = std::vector<Neighbor>;
-
 class Chunk
 {
 public:
@@ -46,13 +30,8 @@ public:
     void OnRender();
     void OnUpdate();
     void BuildMesh();
-    int GetFaces() { return m_Faces; }
-
-    NeighborList GetNeighbors(int x, int y, int z);
 
     Voxel::VoxelData* m_Voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
-    Mesh* m_Mesh;
 private:
-    int m_Faces = 0;
     ChunkPosition m_Position;
 };

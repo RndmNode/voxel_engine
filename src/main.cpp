@@ -3,8 +3,8 @@
 // #include <string>
 // #include <sstream>
 // #include <iomanip>
-#include <sys/resource.h>
-#include <unistd.h>
+// #include <sys/resource.h>
+// #include <unistd.h>
 
 #include "renderer.h"
 #include "vertex_buffer.h"
@@ -15,9 +15,9 @@
 #include "Texture.h"
 #include "Camera.h"
 
-#include "vendor/glm/glm.hpp"
-#include "vendor/glm/gtc/matrix_transform.hpp"
-#include "vendor/imgui/imgui.h"
+// #include "vendor/glm/glm.hpp"
+// #include "vendor/glm/gtc/matrix_transform.hpp"
+// #include "vendor/imgui/imgui.h"
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 

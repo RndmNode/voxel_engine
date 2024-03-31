@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include "Mesh.h"
 
 #include <unordered_map>
 
@@ -12,14 +13,20 @@ public:
     }
 };
 
+struct Neighbor
+{
+    Voxel::VoxelFace m_Face;
+    Voxel::VoxelType m_Type;
+};
+
 using ChunkMap = std::unordered_map<ChunkPosition, Chunk*, MyHashFunction>;
+using NeighborList = std::vector<Neighbor>;
 
 class ChunkManager
 {
 public:
     ChunkManager();
     ~ChunkManager();
-    void CompileMeshes();
     void BuildMesh();
     unsigned int GetFaces() { return m_Faces; }
 

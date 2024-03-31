@@ -11,7 +11,7 @@ namespace test {
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_Chunk->GetFaces(), &m_Chunk->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
+        // GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_Chunk->GetFaces(), &m_Chunk->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
         // Generate Vertex Array and Vertex Buffer
@@ -90,7 +90,7 @@ namespace test {
 
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));
-        glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_Chunk->GetFaces());
+        // glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_Chunk->GetFaces());
         GLCall(glBindVertexArray(0));
     }
     
@@ -99,7 +99,7 @@ namespace test {
         ImGui::Text("Press 'F' to toggle wireframe mode: %s", (m_wire_toggle ? "on" : "off"));
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
         ImGui::Text("Press 'V' to toggle face culling: %s", (cull_face ? "on" : "off"));
-        ImGui::Text("Faces: %d", m_Chunk->GetFaces());
+        // ImGui::Text("Faces: %d", m_Chunk->GetFaces());
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
     }

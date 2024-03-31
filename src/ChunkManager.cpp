@@ -16,20 +16,6 @@ ChunkManager::~ChunkManager()
     
 }
 
-void ChunkManager::CompileMeshes()
-{
-
-    for (auto& chunk : m_Chunks)
-    {
-        // Get instances from chunks
-        std::vector<glm::vec4> instances = chunk.second->m_Mesh->m_Instances;
-        m_Mesh->m_Instances.insert(std::end(m_Mesh->m_Instances), std::begin(instances), std::end(instances));
-
-        // Get Faces from chunks
-        m_Faces += chunk.second->GetFaces();
-    }
-}
-
 void ChunkManager::BuildMesh()
 {
     // Loop through all loaded chunks
