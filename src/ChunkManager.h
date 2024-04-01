@@ -25,7 +25,7 @@ using NeighborList = std::vector<Neighbor>;
 class ChunkManager
 {
 public:
-    ChunkManager();
+    ChunkManager(siv::PerlinNoise::seed_type seed);
     ~ChunkManager();
     void BuildMesh();
     unsigned int GetFaces() { return m_Faces; }
@@ -36,5 +36,6 @@ private:
     unsigned int m_Faces = 0;
 
     NeighborList GetNeighbors(glm::ivec3 voxelPos, ChunkPosition chunkPos);
+    siv::PerlinNoise::seed_type m_World_Seed;
 };
 

@@ -6,7 +6,7 @@
 
 namespace test {
     TestChunk::TestChunk()
-        : m_Chunk(new Chunk({0,0}))
+        // : m_Chunk(new Chunk({0,0}))
     {   
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));
@@ -51,6 +51,11 @@ namespace test {
     
     TestChunk::~TestChunk()
     {
+        GLCall(glDeleteVertexArrays(1, &m_VertexArray));
+        GLCall(glDeleteBuffers(1, &m_VertexBuffer));
+        GLCall(glDeleteBuffers(1, &m_IndexBuffer));
+        GLCall(glDeleteBuffers(1, &m_InstanceBuffer));
+        delete m_Chunk;
     }
     
     void TestChunk::OnUpdate(GLFWwindow *window, float deltaTime)

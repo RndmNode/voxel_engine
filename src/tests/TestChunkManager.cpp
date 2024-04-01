@@ -6,8 +6,9 @@
 
 namespace test {
     TestChunkManager::TestChunkManager()
-        : m_ChunkManager(new ChunkManager())
+        // : m_ChunkManager(new ChunkManager(m_World_Seed))
     {   
+        m_ChunkManager = new ChunkManager(m_World_Seed);
         m_ChunkManager->BuildMesh();
         
         // Generate Instance Buffer
@@ -53,6 +54,11 @@ namespace test {
     
     TestChunkManager::~TestChunkManager()
     {
+        GLCall(glDeleteVertexArrays(1, &m_VertexArray));
+        GLCall(glDeleteBuffers(1, &m_VertexBuffer));
+        GLCall(glDeleteBuffers(1, &m_IndexBuffer));
+        GLCall(glDeleteBuffers(1, &m_InstanceBuffer));
+        delete m_ChunkManager;
     }
     
     void TestChunkManager::OnUpdate(GLFWwindow *window, float deltaTime)

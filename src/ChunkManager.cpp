@@ -1,19 +1,38 @@
 #include "ChunkManager.h"
 #include <iostream>
 
-ChunkManager::ChunkManager()
-    :  m_Mesh(new Mesh())
+ChunkManager::ChunkManager(siv::PerlinNoise::seed_type seed)
+    :   m_Mesh(new Mesh()),
+        m_World_Seed(seed)
 {
-    m_Chunks.insert({ChunkPosition(0, 0), new Chunk(ChunkPosition(0, 0))});
-    m_Chunks.insert({ChunkPosition(CHUNK_SIZE, 0), new Chunk(ChunkPosition(CHUNK_SIZE, 0))});
-    m_Chunks.insert({ChunkPosition(CHUNK_SIZE, -CHUNK_SIZE), new Chunk(ChunkPosition(CHUNK_SIZE, -CHUNK_SIZE))});
-    m_Chunks.insert({ChunkPosition(0, CHUNK_SIZE), new Chunk(ChunkPosition(0, CHUNK_SIZE))});
-    m_Chunks.insert({ChunkPosition(-CHUNK_SIZE, CHUNK_SIZE), new Chunk(ChunkPosition(-CHUNK_SIZE, CHUNK_SIZE))});
+    // m_Chunks.insert({ChunkPosition(0, 0), new Chunk(ChunkPosition(0, 0))});
+    // m_Chunks.insert({ChunkPosition(CHUNK_SIZE, 0), new Chunk(ChunkPosition(CHUNK_SIZE, 0))});
+    // m_Chunks.insert({ChunkPosition(CHUNK_SIZE, -CHUNK_SIZE), new Chunk(ChunkPosition(CHUNK_SIZE, -CHUNK_SIZE))});
+    // m_Chunks.insert({ChunkPosition(0, CHUNK_SIZE), new Chunk(ChunkPosition(0, CHUNK_SIZE))});
+    // m_Chunks.insert({ChunkPosition(-CHUNK_SIZE, CHUNK_SIZE), new Chunk(ChunkPosition(-CHUNK_SIZE, CHUNK_SIZE))});
+
+    // m_Chunks.insert({ChunkPosition(0, 0), new Chunk(ChunkPosition(0, 0), m_World_Seed)});
+    // m_Chunks.insert({ChunkPosition(CHUNK_SIZE, 0), new Chunk(ChunkPosition(CHUNK_SIZE, 0), m_World_Seed)});
+    // m_Chunks.insert({ChunkPosition(0, CHUNK_SIZE), new Chunk(ChunkPosition(0, CHUNK_SIZE), m_World_Seed)});
+    // m_Chunks.insert({ChunkPosition(CHUNK_SIZE, CHUNK_SIZE), new Chunk(ChunkPosition(CHUNK_SIZE, CHUNK_SIZE), m_World_Seed)});
+
+    for (int i = -5; i < 5; i++)
+    {
+        for (int j = -5; j < 5; j++)
+        {
+            m_Chunks.insert({ChunkPosition(i * CHUNK_SIZE, j * CHUNK_SIZE), new Chunk(ChunkPosition(i * CHUNK_SIZE, j * CHUNK_SIZE), m_World_Seed)});
+        }
+    }
 }
 
 ChunkManager::~ChunkManager()
 {
-    
+    // Clean up
+    for (auto& chunk : m_Chunks)
+    {
+        delete chunk.second;
+    }
+    delete m_Mesh;
 }
 
 void ChunkManager::BuildMesh()

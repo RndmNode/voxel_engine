@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Voxel.h"
+#include "vendor/PerlinNoise.hpp"
 
 #define CHUNK_SIZE 32
 #define CHUNK_AREA CHUNK_SIZE * CHUNK_SIZE
@@ -8,8 +9,6 @@
 
 #include <vector>
 #include <unordered_map>
-
-#include "Voxel.h"
 
 struct ChunkPosition
 {
@@ -25,13 +24,14 @@ struct ChunkPosition
 class Chunk
 {
 public:
-    Chunk(ChunkPosition position);
+    Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed);
     ~Chunk();
     void OnRender();
     void OnUpdate();
-    void BuildMesh();
+    void BuildHeightMap(siv::PerlinNoise::seed_type seed);
 
     Voxel::VoxelData* m_Voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 private:
     ChunkPosition m_Position;
+    float heightMap[CHUNK_SIZE][CHUNK_SIZE];
 };

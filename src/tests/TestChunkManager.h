@@ -41,5 +41,6 @@ namespace test
         // Voxel m_Voxel;
         // Chunk* m_Chunk;
         ChunkManager* m_ChunkManager;
+        siv::PerlinNoise::seed_type m_World_Seed = 123456u;
     };
 } // namespace test

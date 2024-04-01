@@ -2,17 +2,32 @@
 
 #include <iostream>
 
-Chunk::Chunk(ChunkPosition position)
+#define NOISE_RESOLUTION 0.01f
+
+Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed)
     :   m_Position(position)
 {
-    for (int i = 0; i < CHUNK_VOLUME; i++)
+    // Generate height map
+    BuildHeightMap(seed);
+
+    // Generate voxels
+    for (int i = 0; i < CHUNK_AREA; i++)
     {
         // Get voxel position
         int x = i % CHUNK_SIZE;
-        int y = i / (CHUNK_SIZE * CHUNK_SIZE);
         int z = (i / CHUNK_SIZE) % CHUNK_SIZE;
-    
-        m_Voxels[x][y][z] = new Voxel::VoxelData({Voxel::SOLID});
+
+        // Get height value
+        float height = ceil(heightMap[x][z] * CHUNK_SIZE);
+
+        // Set voxels in x & z column based on height value
+        for (int y = 0; y < CHUNK_SIZE; y++)
+        {
+            if (y > height)
+                m_Voxels[x][y][z] = new Voxel::VoxelData({Voxel::AIR});
+            else
+                m_Voxels[x][y][z] = new Voxel::VoxelData({Voxel::SOLID});
+        }
     }
 }
 
@@ -22,68 +37,27 @@ Chunk::~Chunk()
 
 void Chunk::OnRender()
 {
-    
 }
 
 void Chunk::OnUpdate()
 {
-    
 }
 
-// void Chunk::BuildMesh()
-// {
-//     for (int i = 0; i < CHUNK_VOLUME; i++)
-//     {
-//         // Get voxel position
-//         int x = i % CHUNK_SIZE;
-//         int y = i / (CHUNK_SIZE * CHUNK_SIZE);
-//         int z = (i / CHUNK_SIZE) % CHUNK_SIZE;
+void Chunk::BuildHeightMap(siv::PerlinNoise::seed_type seed)
+{
+    // Instantiate PerlinNoise object
+    const siv::PerlinNoise perlin{ seed };
 
-//         // Get voxel type
-//         if (m_Voxels[x][y][z]->m_Type == Voxel::AIR)
-//         {
-//             continue;
-//         }
+    // Get height for each x, z coordinate
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    {
+        for (int z = 0; z < CHUNK_SIZE; z++)
+        {
+            // Get height value
+            float height = perlin.octave2D_01((x + m_Position.x) * NOISE_RESOLUTION, (z + m_Position.z) * NOISE_RESOLUTION, 4);
 
-//         // Get neighbors
-//         NeighborList neighbors = GetNeighbors(x, y, z);
-//         for (auto neighbor : neighbors)
-//         {
-//             // Get neighbor face and type
-//             Voxel::VoxelFace face = neighbor.m_Face;
-//             Voxel::VoxelType type = neighbor.m_Type;
-
-//             if (type == Voxel::AIR)
-//             {
-//                 // Increment face count
-//                 m_Faces++;
-
-//                 // Add instance offset to vertices
-//                 m_Mesh->m_Instances.push_back(glm::vec4(x + m_Position.x, y, z + m_Position.z, float(face)));
-//             }
-//         }
-//     }
-// }
-
-// NeighborList Chunk::GetNeighbors(int x, int y, int z)
-// {
-//     NeighborList neighbors;
-
-//     // Add neighbors that are out of bounds
-//     if (x <= 0)                  neighbors.push_back({Voxel::VoxelFace::LEFT,    Voxel::VoxelType::AIR});
-//     if (x >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::RIGHT,   Voxel::VoxelType::AIR});
-//     if (y <= 0)                  neighbors.push_back({Voxel::VoxelFace::BOTTOM,  Voxel::VoxelType::AIR});
-//     if (y >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::TOP,     Voxel::VoxelType::AIR});
-//     if (z <= 0)                  neighbors.push_back({Voxel::VoxelFace::BACK,    Voxel::VoxelType::AIR});
-//     if (z >= CHUNK_SIZE - 1)     neighbors.push_back({Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR});
-
-//     // Add neighbors that are in bounds
-//     if (x > 0)                   neighbors.push_back({Voxel::VoxelFace::LEFT,    m_Voxels[x - 1][y][z]->m_Type});
-//     if (x < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::RIGHT,   m_Voxels[x + 1][y][z]->m_Type});
-//     if (y > 0)                   neighbors.push_back({Voxel::VoxelFace::BOTTOM,  m_Voxels[x][y - 1][z]->m_Type});
-//     if (y < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::TOP,     m_Voxels[x][y + 1][z]->m_Type});
-//     if (z > 0)                   neighbors.push_back({Voxel::VoxelFace::BACK,    m_Voxels[x][y][z - 1]->m_Type});
-//     if (z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[x][y][z + 1]->m_Type});
-
-//     return neighbors;
-// }
+            // Store height value
+            heightMap[x][z] = height;
+        }
+    }
+}
