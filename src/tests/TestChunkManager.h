@@ -26,20 +26,19 @@ namespace test
         void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
     private:
         // Geometry buffers
-        std::unique_ptr<Shader> m_Shader;
-
         unsigned int m_VertexBuffer;
         unsigned int m_VertexArray;
         unsigned int m_IndexBuffer;
         unsigned int m_InstanceBuffer;
 
+        std::unique_ptr<Shader> m_Shader;
+        
         // Render settings
         bool m_wire_toggle = false;
         bool m_mouse_captured = true;
         bool cull_face = true;
 
-        // Voxel m_Voxel;
-        // Chunk* m_Chunk;
+        // World settings
         ChunkManager* m_ChunkManager;
         siv::PerlinNoise::seed_type m_World_Seed = 123456u;
     };

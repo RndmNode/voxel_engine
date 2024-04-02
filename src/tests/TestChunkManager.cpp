@@ -9,7 +9,7 @@ namespace test {
         // : m_ChunkManager(new ChunkManager(m_World_Seed))
     {   
         m_ChunkManager = new ChunkManager(m_World_Seed);
-        m_ChunkManager->BuildMesh();
+        // m_ChunkManager->BuildMesh();
         
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));

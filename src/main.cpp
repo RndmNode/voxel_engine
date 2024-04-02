@@ -21,10 +21,10 @@
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
-#include "tests/TestTexture2D.h"
-#include "tests/TestBatchColorQuads.h"
-#include "tests/TestBatchTextures.h"
-#include "tests/TestChunk.h"
+// #include "tests/TestTexture2D.h"
+// #include "tests/TestBatchColorQuads.h"
+// #include "tests/TestBatchTextures.h"
+// #include "tests/TestChunk.h"
 #include "tests/TestInstancing.h"
 #include "tests/TestChunkManager.h"
 
@@ -142,7 +142,7 @@ int main(void)
         // testMenu->RegisterTest<test::TestBatchColorQuads>("Batch Rendering");
         // testMenu->RegisterTest<test::TestBatchTextures>("Batch Textures");
         testMenu->RegisterTest<test::TestInstancing>("Instancing");
-        testMenu->RegisterTest<test::TestChunk>("Chunk");
+        // testMenu->RegisterTest<test::TestChunk>("Chunk");
         testMenu->RegisterTest<test::TestChunkManager>("Chunk Manager");
 
         // render loop

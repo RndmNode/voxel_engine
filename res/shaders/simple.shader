@@ -18,36 +18,36 @@ void main()
 
    if (a_Offset.w == 0)    // Front Face
    {
-      color_coords = vec4(1.0, 1.0, 1.0, 1.0); // white
+      color_coords = vec4(0.7, 0.7, 0.7, 1.0); // Light Gray
    }
    else if (a_Offset.w == 1)    // Back Face
    {
       pos.xy = pos.yx;
-      color_coords = vec4(1.0, 0.0, 0.0, 1.0); // red
+      color_coords = vec4(0.4, 0.4, 0.4, 1.0); // Dark Gray
    }
    else if (a_Offset.w == 2)   // Left Face
    {
       pos.xz = pos.zx;
-      color_coords = vec4(0.0, 1.0, 0.0, 1.0); // green
+      color_coords = vec4(0.7, 0.7, 0.7, 1.0); // Medium Gray
    }
    else if (a_Offset.w == 3)   // Right Face
    {
       pos.xz = pos.zx;
       pos.yz = pos.zy;
       pos.x++;
-      color_coords = vec4(0.0, 0.0, 1.0, 1.0); // blue
+      color_coords = vec4(0.5, 0.5, 0.5, 1.0); // Darker Gray
    }
    else if (a_Offset.w == 4)   // Top Face
    {
       pos.yz = pos.zy;
       pos.xz = pos.zx;
       pos.y++;
-      color_coords = vec4(1.0, 1.0, 0.0, 1.0); // yellow
+      color_coords = vec4(0.8, 0.8, 0.8, 1.0); // Lightest Gray
    }
    else if (a_Offset.w == 5)   // Bottom Face
    {
       pos.zy = pos.yz;
-      color_coords = vec4(1.0, 0.0, 1.0, 1.0); // purple
+      color_coords = vec4(0.3, 0.3, 0.3, 1.0); // Darkest Gray
    }
 
    if (a_Offset.w > 0)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Voxel.h"
+#include "Mesh.h"
 #include "vendor/PerlinNoise.hpp"
 
 #define CHUNK_SIZE 32
@@ -8,7 +9,6 @@
 #define CHUNK_VOLUME CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE
 
 #include <vector>
-#include <unordered_map>
 
 struct ChunkPosition
 {
@@ -21,17 +21,34 @@ struct ChunkPosition
     }
 };
 
+struct Neighbor
+{
+    Voxel::VoxelFace m_Face;
+    Voxel::VoxelType m_Type;
+};
+
+using NeighborList = std::vector<Neighbor>;
+
+
+class ChunkManager; // Forward declaration to use the ChunkManager class in the Chunk class
+
 class Chunk
 {
 public:
-    Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed);
+    Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkManager* manager);
     ~Chunk();
     void OnRender();
     void OnUpdate();
-    void BuildHeightMap(siv::PerlinNoise::seed_type seed);
+    void BuildMesh();
 
     Voxel::VoxelData* m_Voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    Mesh* m_Mesh;
+    int m_Faces = 0;
 private:
+    void BuildHeightMap(siv::PerlinNoise::seed_type seed);
+    NeighborList GetNeighbors(glm::ivec3 voxelPos);
+
     ChunkPosition m_Position;
-    float heightMap[CHUNK_SIZE][CHUNK_SIZE];
+    int heightMap[CHUNK_SIZE][CHUNK_SIZE];
+    ChunkManager* m_Manager;
 };
