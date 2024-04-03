@@ -31,7 +31,7 @@ public:
     Mesh* m_Mesh;
     ChunkMap m_Chunks;
 private:
-    bool GetChunksWithinRenderDistance(ChunkPosition playerPos);
+    void GetChunksWithinRenderDistance(ChunkPosition playerPos);
 
     unsigned int m_Faces = 0;
 
