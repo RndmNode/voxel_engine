@@ -73,6 +73,10 @@ bool testStarted = false;
 
 int main(void)
 {
+    printf("t || t: %i\n", true || true);
+    printf("f || t: %i\n", false || true);
+    printf("f || f: %i\n", false || false);
+
     // Instantiate GLFW Window
     GLFWwindow* window;
 
@@ -178,6 +182,7 @@ int main(void)
                 
                 // Check if a test has been selected to run and render if so
                 currentTest->OnUpdate(window, deltaTime);
+                currentTest->UpdatePlayerPosition(camera.Position);
                 currentTest->OnRender();
                 ImGui::Begin("Test");
 

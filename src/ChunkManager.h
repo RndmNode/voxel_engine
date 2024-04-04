@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-#define RENDER_DISTANCE 7
+#define RENDER_DISTANCE 2
 
 class MyHashFunction {
 public:
@@ -24,18 +24,22 @@ class ChunkManager
 public:
     ChunkManager(siv::PerlinNoise::seed_type seed);
     ~ChunkManager();
-    void UpdateMesh();
-    // void BuildMesh();
+    bool Update();
+
     unsigned int GetFaces() { return m_Faces; }
 
     Mesh* m_Mesh;
     ChunkMap m_Chunks;
+    glm::vec3 m_PlayerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 private:
-    void GetChunksWithinRenderDistance(ChunkPosition playerPos);
+    bool UpdateChunksAroundPlayer();
+    bool UpdateMesh();
 
     unsigned int m_Faces = 0;
 
     // NeighborList GetNeighbors(glm::ivec3 voxelPos, ChunkPosition chunkPos);
     siv::PerlinNoise::seed_type m_World_Seed;
+    ChunkPosition m_CurrentPlayerChunkPos = ChunkPosition(5, 5);
+    ChunkPosition m_PreviousPlayerChunkPos = ChunkPosition(5, 5);
 };
 

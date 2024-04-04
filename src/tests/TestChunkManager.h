@@ -24,7 +24,11 @@ namespace test
         void OnRender() override;
         void OnImGuiRender() override;
         void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
+        void UpdatePlayerPosition(glm::vec3 position) override;
+
     private:
+        glm::vec3 m_PlayerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+
         // Geometry buffers
         unsigned int m_VertexBuffer;
         unsigned int m_VertexArray;

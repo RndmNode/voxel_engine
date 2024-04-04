@@ -84,7 +84,6 @@ void Chunk::BuildMesh()
 
         for (int y = heightMap[x][z]; y >=0; y--)
         {
-
             // Get neighbors
             NeighborList neighbors = GetNeighbors({x, y, z});
 

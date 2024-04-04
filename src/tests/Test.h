@@ -20,6 +20,7 @@ namespace test {
         virtual void OnImGuiRender() {}
         virtual void ProcessInput(GLFWwindow *window) {}
         virtual void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {}
+        virtual void UpdatePlayerPosition(glm::vec3 position) {}
 
     private:
         std::unique_ptr<Shader> m_Shader;

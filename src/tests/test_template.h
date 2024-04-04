@@ -16,6 +16,7 @@ namespace test
         void OnRender() override;
         void OnImGuiRender() override;
         void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
+        void UpdatePlayerPosition(glm::vec3 position) override;
     private:
         
     };

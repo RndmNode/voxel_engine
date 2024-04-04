@@ -69,6 +69,18 @@ namespace test {
             m_mouse_captured = !m_mouse_captured;
         if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
             cull_face = !cull_face;
+
+        if (m_ChunkManager->Update())
+        {
+            // clear instance buffer
+            GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+            GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), nullptr, GL_STATIC_DRAW));
+
+            // update instance buffer
+            // GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+            GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &m_ChunkManager->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
+            GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        }
     }
     
     void TestChunkManager::OnRender()
@@ -96,6 +108,14 @@ namespace test {
         else
             glDisable(GL_CULL_FACE);
 
+        /*
+            NEED TO FIGURE OUT WHAT I NEED TO UPDATE IN ORDER TO GET THE INSTANCED RENDERING TO UPDATE PROPERLY
+        */
+
+        // GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+        // GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &m_ChunkManager->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
+        // GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_ChunkManager->GetFaces());
@@ -118,5 +138,10 @@ namespace test {
         m_Shader->SetUniformMat4f("u_Model", model);
         m_Shader->SetUniformMat4f("u_View", view);
         m_Shader->SetUniformMat4f("u_Projection", projection);
+    }
+    
+    void TestChunkManager::UpdatePlayerPosition(glm::vec3 position)
+    {
+        m_ChunkManager->m_PlayerPosition = position;
     }
 }

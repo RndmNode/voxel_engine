@@ -30,5 +30,10 @@ namespace test {
         
     }
 
+    void test_template::UpdatePlayerPosition(glm::vec3 position)
+    {
+        
+    }
+
     
 }

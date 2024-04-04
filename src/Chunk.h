@@ -12,12 +12,17 @@
 
 struct ChunkPosition
 {
-    ChunkPosition(int x, int z) : x(x), z(z) {}
+    ChunkPosition(int x=0, int z=0) : x(x), z(z) {}
     int x, z;
 
     bool operator==(const ChunkPosition& other) const
     {
         return x == other.x && z == other.z;
+    }
+
+    bool operator!=(const ChunkPosition& other) const
+    {
+        return x != other.x || z != other.z;
     }
 };
 
