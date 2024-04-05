@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-#define RENDER_DISTANCE 2
+#define RENDER_DISTANCE 4
 
 class MyHashFunction {
 public:
@@ -33,7 +33,9 @@ public:
     glm::vec3 m_PlayerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 private:
     bool UpdateChunksAroundPlayer();
-    bool UpdateMesh();
+    void UpdateChunkMeshes(std::vector<ChunkPosition> stack);
+    void LoadChunk(ChunkPosition chunkPos);
+    // void UnloadChunk(ChunkPosition chunkPos);
 
     unsigned int m_Faces = 0;
 

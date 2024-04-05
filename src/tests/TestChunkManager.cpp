@@ -76,9 +76,14 @@ namespace test {
             GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
             GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), nullptr, GL_STATIC_DRAW));
 
+            std::vector<glm::vec4> instances;
+            for (auto& chunk : m_ChunkManager->m_Chunks)
+            {
+                instances.insert(instances.end(), chunk.second->m_Mesh->m_Instances.begin(), chunk.second->m_Mesh->m_Instances.end());
+            }
             // update instance buffer
             // GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
-            GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &m_ChunkManager->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
+            GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &instances[0], GL_STATIC_DRAW));
             GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
         }
     }
@@ -112,9 +117,13 @@ namespace test {
             NEED TO FIGURE OUT WHAT I NEED TO UPDATE IN ORDER TO GET THE INSTANCED RENDERING TO UPDATE PROPERLY
         */
 
-        // GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
-        // GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &m_ChunkManager->m_Mesh->m_Instances[0], GL_STATIC_DRAW));
-        // GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    //    // clear instance buffer
+    //     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+    //     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), nullptr, GL_STATIC_DRAW));
+
+    //     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+    //     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &instances[0], GL_STATIC_DRAW));
+    //     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
         m_Shader->Bind();
         GLCall(glBindVertexArray(m_VertexArray));

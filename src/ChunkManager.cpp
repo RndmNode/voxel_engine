@@ -1,6 +1,7 @@
 #include "ChunkManager.h"
 
 #include <iostream>
+#include <thread>
 
 ChunkManager::ChunkManager(siv::PerlinNoise::seed_type seed)
     :   m_Mesh(new Mesh()),
@@ -32,34 +33,40 @@ bool ChunkManager::Update()
         // Load new chunks in render distance
         return UpdateChunksAroundPlayer();
     }
+
     return false;
 }
 
-bool ChunkManager::UpdateMesh()
-{
-    // Clear mesh data first before adding new chunks
-    m_Mesh->m_Instances.clear();  /////////// THIS IS STILL RESULTING IN HAVING TO REBUILD THE ENTIRE MESH INSTEAD OF JUST ADDING NEW CHUNKS
-    m_Faces = 0;
-
-    // Build chunk meshes
-    for (auto& chunk : m_Chunks)
+void ChunkManager::UpdateChunkMeshes(std::vector<ChunkPosition> stack)
+{   
+    for (auto chunkPos : stack)
     {
-        std::cout << "Building mesh for chunk\t" << chunk.first.x << ", " << chunk.first.z << "\n";
-        chunk.second->BuildMesh();
+        m_Chunks[chunkPos]->BuildMesh();
+        m_Faces += m_Chunks[chunkPos]->m_Faces;
     }
-
-    // Add all chunks to mesh
-    for (auto& chunk : m_Chunks)
-    {
-        m_Mesh->m_Instances.insert(m_Mesh->m_Instances.end(), chunk.second->m_Mesh->m_Instances.begin(), chunk.second->m_Mesh->m_Instances.end());
-        m_Faces += chunk.second->m_Faces;
-    }
-
-    return true;
 }
+
+void ChunkManager::LoadChunk(ChunkPosition chunkPos)
+{
+    std::cout << "Loading chunk\t" << chunkPos.x << ", " << chunkPos.z << "\n";
+    m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+}
+
+// void ChunkManager::UnloadChunk(ChunkPosition chunkPos)
+// {
+//     std::cout << "Unloading chunk\t" << chunkPos.x << ", " << chunkPos.z << "\n";
+//     m_Faces -= m_Chunks[chunkPos]->m_Faces;
+//     std::cout << "Deleting chunk...\n";
+//     delete m_Chunks[chunkPos];
+//     std::cout << "Erasing chunk from m_Chunks...\n";
+//     m_Chunks.erase(chunkPos);
+// }
 
 bool ChunkManager::UpdateChunksAroundPlayer()
 {
+    // Stack to keep track of chunks that need to be updated
+    std::vector<ChunkPosition> ChunkStack;
+
     ChunkPosition playerPos = {m_CurrentPlayerChunkPos.x * CHUNK_SIZE, m_CurrentPlayerChunkPos.z * CHUNK_SIZE};
     // Get all possible chunks within render distance
     for (int x = -RENDER_DISTANCE; x < RENDER_DISTANCE; x++)
@@ -70,21 +77,28 @@ bool ChunkManager::UpdateChunksAroundPlayer()
             if (m_Chunks.find(chunkPos) == m_Chunks.end())
             {
                 // Load chunk
-                std::cout << "Loading chunk\t" << chunkPos.x << ", " << chunkPos.z << "\n";
-                m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+                LoadChunk(chunkPos);
+                ChunkStack.push_back(chunkPos);
             }
         }
     }
 
+    // Update chunk meshes for new chunks
+    UpdateChunkMeshes(ChunkStack);
+
     // Unload chunks out of render distance + 1
     for (auto it = m_Chunks.begin(); it != m_Chunks.end();)
     {
-        bool x_test, z_test;
-        x_test = true ? it->first.x < playerPos.x - ((RENDER_DISTANCE + 1) * CHUNK_SIZE) || it->first.x > playerPos.x + ((RENDER_DISTANCE + 1) * CHUNK_SIZE) : false;
-        z_test = true ? it->first.z < playerPos.z - ((RENDER_DISTANCE + 1) * CHUNK_SIZE) || it->first.z > playerPos.z + ((RENDER_DISTANCE + 1) * CHUNK_SIZE) : false;
+        // bool x_test, z_test;
+        bool x_test = true ? it->first.x < playerPos.x - ((RENDER_DISTANCE + 1) * CHUNK_SIZE) || it->first.x > playerPos.x + ((RENDER_DISTANCE + 1) * CHUNK_SIZE) : false;
+        bool z_test = true ? it->first.z < playerPos.z - ((RENDER_DISTANCE + 1) * CHUNK_SIZE) || it->first.z > playerPos.z + ((RENDER_DISTANCE + 1) * CHUNK_SIZE) : false;
 
         if(x_test || z_test)
         {
+            // Unload chunk
+            // UnloadChunk(it->first);
+            // it++;
+            m_Faces -= it->second->m_Faces;
             delete it->second;
             it = m_Chunks.erase(it);
         }
@@ -92,5 +106,5 @@ bool ChunkManager::UpdateChunksAroundPlayer()
             it++;
     }
 
-    return UpdateMesh();
+    return true;
 }
