@@ -50,8 +50,10 @@ public:
     Mesh* m_Mesh;
     int m_Faces = 0;
 private:
-    void BuildHeightMap(siv::PerlinNoise::seed_type seed);
+    void BuildHeightMap();
     NeighborList GetNeighbors(glm::ivec3 voxelPos);
+    Neighbor GetOutOfBoundsNeighbor(glm::vec3 voxelPos, Voxel::VoxelFace face);
+    siv::PerlinNoise::seed_type m_Seed;
 
     ChunkPosition m_Position;
     int heightMap[CHUNK_SIZE][CHUNK_SIZE];

@@ -7,10 +7,11 @@
 Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkManager* manager)
     :   m_Mesh(new Mesh()),
         m_Position(position),
+        m_Seed(seed),
         m_Manager(manager)
 {
     // Generate height map
-    BuildHeightMap(seed);
+    BuildHeightMap();
 
     // Generate voxels
     for (int i = 0; i < CHUNK_AREA; i++)
@@ -52,10 +53,10 @@ void Chunk::OnUpdate()
 {
 }
 
-void Chunk::BuildHeightMap(siv::PerlinNoise::seed_type seed)
+void Chunk::BuildHeightMap()
 {
     // Instantiate PerlinNoise object
-    const siv::PerlinNoise perlin{ seed };
+    const siv::PerlinNoise perlin{ m_Seed };
 
     // Get height for each x, z coordinate
     for (int x = 0; x < CHUNK_SIZE; x++)
@@ -77,10 +78,7 @@ void Chunk::BuildMesh()
     {
         // Get voxel position
         int x = i % CHUNK_SIZE;
-        // int y = i / (CHUNK_SIZE * CHUNK_SIZE);
         int z = (i / CHUNK_SIZE) % CHUNK_SIZE;
-
-        // int y = heightMap[x][z];
 
         for (int y = heightMap[x][z]; y >=0; y--)
         {
@@ -104,7 +102,6 @@ void Chunk::BuildMesh()
                 }
             }
         }
-
     }
 }
 
@@ -117,16 +114,18 @@ NeighborList Chunk::GetNeighbors(glm::ivec3 voxelPos)
     {
         const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x - CHUNK_SIZE, m_Position.z});
 
-        if (chunk != m_Manager->m_Chunks.end())        neighbors.push_back({Voxel::VoxelFace::LEFT,    chunk->second->m_Voxels[CHUNK_SIZE - 1][voxelPos.y][voxelPos.z]->m_Type});
-        // else                                neighbors.push_back({Voxel::VoxelFace::LEFT,    Voxel::VoxelType::AIR});
+        if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::LEFT,    chunk->second->m_Voxels[CHUNK_SIZE - 1][voxelPos.y][voxelPos.z]->m_Type});
+        // else                                            neighbors.push_back({Voxel::VoxelFace::LEFT,    Voxel::VoxelType::AIR});
+        else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::LEFT));
     }
 
     if (voxelPos.x >= CHUNK_SIZE - 1)
     {
         const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x + CHUNK_SIZE, m_Position.z});
 
-        if (chunk != m_Manager->m_Chunks.end())        neighbors.push_back({Voxel::VoxelFace::RIGHT,   chunk->second->m_Voxels[0][voxelPos.y][voxelPos.z]->m_Type});
-        // else                                neighbors.push_back({Voxel::VoxelFace::RIGHT,   Voxel::VoxelType::AIR});
+        if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::RIGHT,   chunk->second->m_Voxels[0][voxelPos.y][voxelPos.z]->m_Type});
+        // else                                            neighbors.push_back({Voxel::VoxelFace::RIGHT,   Voxel::VoxelType::AIR});
+        else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::RIGHT));
     }
 
     // if (voxelPos.y <= 0)                    neighbors.push_back({Voxel::VoxelFace::BOTTOM,  Voxel::VoxelType::AIR});
@@ -136,16 +135,18 @@ NeighborList Chunk::GetNeighbors(glm::ivec3 voxelPos)
     {
         const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x, m_Position.z - CHUNK_SIZE});
 
-        if (chunk != m_Manager->m_Chunks.end())        neighbors.push_back({Voxel::VoxelFace::BACK,    chunk->second->m_Voxels[voxelPos.x][voxelPos.y][CHUNK_SIZE - 1]->m_Type});
-        // else                                neighbors.push_back({Voxel::VoxelFace::BACK,    Voxel::VoxelType::AIR});
+        if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::BACK,    chunk->second->m_Voxels[voxelPos.x][voxelPos.y][CHUNK_SIZE - 1]->m_Type});
+        // else                                            neighbors.push_back({Voxel::VoxelFace::BACK,    Voxel::VoxelType::AIR});
+        else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::BACK));
     }
 
     if (voxelPos.z >= CHUNK_SIZE - 1)
     {
         const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x, m_Position.z + CHUNK_SIZE});
 
-        if (chunk != m_Manager->m_Chunks.end())        neighbors.push_back({Voxel::VoxelFace::FRONT,   chunk->second->m_Voxels[voxelPos.x][voxelPos.y][0]->m_Type});
-        // else                                neighbors.push_back({Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR});
+        if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::FRONT,   chunk->second->m_Voxels[voxelPos.x][voxelPos.y][0]->m_Type});
+        // else                                            neighbors.push_back({Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR});
+        else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::FRONT));
     }
 
     // Add neighbors that are in bounds
@@ -157,4 +158,32 @@ NeighborList Chunk::GetNeighbors(glm::ivec3 voxelPos)
     if (voxelPos.z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[voxelPos.x][voxelPos.y][voxelPos.z + 1]->m_Type});
 
     return neighbors;
+}
+
+Neighbor Chunk::GetOutOfBoundsNeighbor(glm::vec3 voxelPos, Voxel::VoxelFace face)
+{
+    // Instantiate PerlinNoise object
+    const siv::PerlinNoise perlin{ m_Seed };
+
+    int x = voxelPos.x + m_Position.x;
+    int z = voxelPos.z + m_Position.z;
+
+    // Get Coords of needed voxel position data
+    if (face == Voxel::VoxelFace::FRONT)
+        z++;
+    else if (face == Voxel::VoxelFace::BACK)
+        z--;
+    else if (face == Voxel::VoxelFace::LEFT)
+        x--;
+    else if (face == Voxel::VoxelFace::RIGHT)
+        x++;
+
+    int y = ceil(perlin.normalizedOctave2D_01(x * NOISE_RESOLUTION, z * NOISE_RESOLUTION, 4) * CHUNK_SIZE);
+    
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+
+    if (y + 1 > voxelPos.y)
+        return {face, Voxel::VoxelType::SOLID};
+    else
+        return {face, Voxel::VoxelType::AIR};
 }
