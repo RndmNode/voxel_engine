@@ -6,8 +6,8 @@
 
 Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkManager* manager)
     :   m_Mesh(new Mesh()),
-        m_Position(position),
         m_Seed(seed),
+        m_Position(position),
         m_Manager(manager)
 {
     // Generate height map
@@ -180,7 +180,7 @@ Neighbor Chunk::GetOutOfBoundsNeighbor(glm::vec3 voxelPos, Voxel::VoxelFace face
 
     int y = ceil(perlin.normalizedOctave2D_01(x * NOISE_RESOLUTION, z * NOISE_RESOLUTION, 4) * CHUNK_SIZE);
     
-    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+    // std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
 
     if (y + 1 > voxelPos.y)
         return {face, Voxel::VoxelType::SOLID};

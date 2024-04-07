@@ -73,10 +73,6 @@ bool testStarted = false;
 
 int main(void)
 {
-    printf("t || t: %i\n", true || true);
-    printf("f || t: %i\n", false || true);
-    printf("f || f: %i\n", false || false);
-
     // Instantiate GLFW Window
     GLFWwindow* window;
 

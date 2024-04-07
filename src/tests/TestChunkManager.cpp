@@ -135,7 +135,9 @@ namespace test {
     {
         ImGui::Text("Press 'F' to toggle wireframe mode: %s", (m_wire_toggle ? "on" : "off"));
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
-        ImGui::Text("Press 'V' to toggle face culling: %s", (cull_face ? "on" : "off"));
+        ImGui::Text("Press 'V' to toggle face culling: %s\n", (cull_face ? "on" : "off"));
+
+        ImGui::Text("Chunks: %zu", m_ChunkManager->m_Chunks.size());
         ImGui::Text("Faces: %d", m_ChunkManager->GetFaces());
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate
