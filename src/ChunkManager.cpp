@@ -37,46 +37,35 @@ bool ChunkManager::Update()
     return false;
 }
 
-void ChunkManager::UpdateChunkMeshes(std::vector<ChunkPosition> stack)
-{   
-    std::vector<std::thread> threads;
+// void ChunkManager::UpdateChunkMeshes(std::vector<ChunkPosition> stack)
+// {   
+//     std::vector<std::thread> threads;
 
-    // Update chunk meshes
-    for (auto chunkPos : stack)
-        threads.push_back(std::thread(&Chunk::BuildMesh, m_Chunks[chunkPos]));
+//     // Update chunk meshes
+//     for (auto chunkPos : stack)
+//         threads.push_back(std::thread(&Chunk::BuildMesh, m_Chunks[chunkPos]));
 
-    // Join threads
-    for (auto& thread : threads)
-        thread.join();
+//     // Join threads
+//     for (auto& thread : threads)
+//         thread.join();
 
-    // Updated Face count
-    for (auto chunkPos : stack)
-        m_Faces += m_Chunks[chunkPos]->m_Faces;
-}
+//     // Updated Face count
+//     for (auto chunkPos : stack)
+//         m_Faces += m_Chunks[chunkPos]->m_Faces;
+// }
 
 void ChunkManager::LoadChunk(ChunkPosition chunkPos)
 {
-    m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+    while (m_Chunks[chunkPos] == nullptr)
+        m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+    
     m_Chunks[chunkPos]->BuildMesh();
     m_Faces += m_Chunks[chunkPos]->m_Faces;
 }
 
-// void ChunkManager::UnloadChunk(ChunkPosition chunkPos)
-// {
-//     std::cout << "Unloading chunk\t" << chunkPos.x << ", " << chunkPos.z << "\n";
-//     m_Faces -= m_Chunks[chunkPos]->m_Faces;
-//     std::cout << "Deleting chunk...\n";
-//     delete m_Chunks[chunkPos];
-//     std::cout << "Erasing chunk from m_Chunks...\n";
-//     m_Chunks.erase(chunkPos);
-// }
-
 bool ChunkManager::UpdateChunksAroundPlayer()
 {
     std::vector<std::thread> threads;
-
-    // Stack to keep track of chunks that need to be updated
-    std::vector<ChunkPosition> ChunkStack;
 
     ChunkPosition playerPos = {m_CurrentPlayerChunkPos.x * CHUNK_SIZE, m_CurrentPlayerChunkPos.z * CHUNK_SIZE};
     // Get all possible chunks within render distance
@@ -88,9 +77,7 @@ bool ChunkManager::UpdateChunksAroundPlayer()
             if (m_Chunks.find(chunkPos) == m_Chunks.end())
             {
                 // Load chunk
-                // LoadChunk(chunkPos);
-                // std::cout << "Loading chunk\t" << chunkPos.x << ", " << chunkPos.z << "\n";
-                ChunkStack.push_back(chunkPos);
+                m_NumChunks++;
                 threads.push_back(std::thread(&ChunkManager::LoadChunk, this, chunkPos));
             }
         }
@@ -100,8 +87,8 @@ bool ChunkManager::UpdateChunksAroundPlayer()
     for (auto& thread : threads)
         thread.join();
 
-    // Update chunk meshes for new chunks
-    // UpdateChunkMeshes(ChunkStack);
+    // Stack to keep track of chunks that need to be updated
+    std::vector<ChunkPosition> ChunkStack;
 
     // Unload chunks out of render distance + 1
     for (auto it = m_Chunks.begin(); it != m_Chunks.end();)
@@ -112,10 +99,9 @@ bool ChunkManager::UpdateChunksAroundPlayer()
 
         if(x_test || z_test)
         {
+            m_NumChunks--;
             // Unload chunk
-            // UnloadChunk(it->first);
-            // it++;
-            std::cout << "Unloading chunk\t" << it->first.x << ", " << it->first.z << "\n";
+            ChunkStack.push_back(it->first);
             m_Faces -= it->second->m_Faces;
             delete it->second;
             it = m_Chunks.erase(it);
@@ -123,6 +109,10 @@ bool ChunkManager::UpdateChunksAroundPlayer()
         else
             it++;
     }
+
+    // Ensure all chunks are unloaded
+    for (auto chunkPos : ChunkStack)
+        m_Chunks.erase(chunkPos);
 
     return true;
 }

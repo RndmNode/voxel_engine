@@ -138,6 +138,7 @@ namespace test {
         ImGui::Text("Press 'V' to toggle face culling: %s\n", (cull_face ? "on" : "off"));
 
         ImGui::Text("Chunks: %zu", m_ChunkManager->m_Chunks.size());
+        ImGui::Text("Num Chunks: %i", m_ChunkManager->GetNumChunks());
         ImGui::Text("Faces: %d", m_ChunkManager->GetFaces());
         ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 
                     1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);  // framerate

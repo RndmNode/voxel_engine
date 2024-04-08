@@ -27,17 +27,21 @@ public:
     bool Update();
 
     unsigned int GetFaces() { return m_Faces; }
+    unsigned int GetNumChunks() { return m_NumChunks; }
+
+    unsigned int m_NumChunks = 0;
 
     Mesh* m_Mesh;
     ChunkMap m_Chunks;
     glm::vec3 m_PlayerPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 private:
     bool UpdateChunksAroundPlayer();
-    void UpdateChunkMeshes(std::vector<ChunkPosition> stack);
+    // void UpdateChunkMeshes(std::vector<ChunkPosition> stack);
     void LoadChunk(ChunkPosition chunkPos);
     // void UnloadChunk(ChunkPosition chunkPos);
 
     unsigned int m_Faces = 0;
+    
 
     // NeighborList GetNeighbors(glm::ivec3 voxelPos, ChunkPosition chunkPos);
     siv::PerlinNoise::seed_type m_World_Seed;

@@ -53,7 +53,8 @@ private:
     void BuildHeightMap();
     NeighborList GetNeighbors(glm::ivec3 voxelPos);
     Neighbor GetOutOfBoundsNeighbor(glm::vec3 voxelPos, Voxel::VoxelFace face);
-    siv::PerlinNoise::seed_type m_Seed;
+    // siv::PerlinNoise::seed_type m_Seed;
+    siv::PerlinNoise m_Perlin;
 
     ChunkPosition m_Position;
     int heightMap[CHUNK_SIZE][CHUNK_SIZE];
