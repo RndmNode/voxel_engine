@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-#define RENDER_DISTANCE 4
+#define RENDER_DISTANCE 5
 
 class MyHashFunction {
 public:

@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <thread>
+#include <mutex>
+
+std::mutex g_Mutex;
 
 ChunkManager::ChunkManager(siv::PerlinNoise::seed_type seed)
     :   m_Mesh(new Mesh()),
@@ -26,7 +29,6 @@ bool ChunkManager::Update()
     // Check if player has moved to a new chunk
     if (m_CurrentPlayerChunkPos != m_PreviousPlayerChunkPos)
     {
-        std::cout << "Player has moved to a new chunk\t" << m_CurrentPlayerChunkPos.x * CHUNK_SIZE << ", " << m_CurrentPlayerChunkPos.z * CHUNK_SIZE << "\n";
         // Update player's previous chunk position
         m_PreviousPlayerChunkPos = m_CurrentPlayerChunkPos;
 
@@ -56,9 +58,13 @@ bool ChunkManager::Update()
 
 void ChunkManager::LoadChunk(ChunkPosition chunkPos)
 {
-    while (m_Chunks[chunkPos] == nullptr)
-        m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+    // while (m_Chunks[chunkPos] == nullptr)
+    //     m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
     
+    g_Mutex.lock();
+    m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+    g_Mutex.unlock();
+
     m_Chunks[chunkPos]->BuildMesh();
     m_Faces += m_Chunks[chunkPos]->m_Faces;
 }
@@ -112,7 +118,8 @@ bool ChunkManager::UpdateChunksAroundPlayer()
 
     // Ensure all chunks are unloaded
     for (auto chunkPos : ChunkStack)
-        m_Chunks.erase(chunkPos);
+        if (m_Chunks.find(chunkPos) != m_Chunks.end())
+            m_Chunks.erase(chunkPos);
 
     return true;
 }

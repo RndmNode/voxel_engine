@@ -70,21 +70,27 @@ namespace test {
         if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
             cull_face = !cull_face;
 
+
         if (m_ChunkManager->Update())
         {
+            std::cout << "Updating Chunks\n";
             // clear instance buffer
             GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
             GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), nullptr, GL_STATIC_DRAW));
 
+            std::cout << "Updating Instance Buffer\n";
             std::vector<glm::vec4> instances;
             for (auto& chunk : m_ChunkManager->m_Chunks)
             {
                 instances.insert(instances.end(), chunk.second->m_Mesh->m_Instances.begin(), chunk.second->m_Mesh->m_Instances.end());
             }
             // update instance buffer
-            // GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+            std::cout << "Sending data to Instance Buffer\n";
+            GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
             GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &instances[0], GL_STATIC_DRAW));
             GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+            std::cout << "Finished Updating\n";
         }
     }
     
@@ -133,6 +139,8 @@ namespace test {
     
     void TestChunkManager::OnImGuiRender()
     {
+        ImGui::Text("Player Position: (%.2f, %.2f, %.2f)", m_ChunkManager->m_PlayerPosition.x, m_ChunkManager->m_PlayerPosition.y, m_ChunkManager->m_PlayerPosition.z);
+
         ImGui::Text("Press 'F' to toggle wireframe mode: %s", (m_wire_toggle ? "on" : "off"));
         ImGui::Text("Press 'C' to toggle mouse capture: %s", (m_mouse_captured ? "on" : "off"));
         ImGui::Text("Press 'V' to toggle face culling: %s\n", (cull_face ? "on" : "off"));
