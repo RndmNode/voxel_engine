@@ -5,8 +5,9 @@
 #include "vendor/PerlinNoise.hpp"
 
 #define CHUNK_SIZE 32
+#define CHUNK_HEIGHT 128
 #define CHUNK_AREA CHUNK_SIZE * CHUNK_SIZE
-#define CHUNK_VOLUME CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE
+#define CHUNK_VOLUME CHUNK_SIZE * CHUNK_SIZE * CHUNK_HEIGHT
 
 #include <vector>
 
@@ -46,7 +47,7 @@ public:
     void OnUpdate();
     void BuildMesh();
 
-    Voxel::VoxelData* m_Voxels[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    Voxel::VoxelData* m_Voxels[CHUNK_SIZE][CHUNK_HEIGHT][CHUNK_SIZE];
     Mesh* m_Mesh;
     int m_Faces = 0;
 private:
@@ -58,5 +59,5 @@ private:
 
     ChunkPosition m_Position;
     int heightMap[CHUNK_SIZE][CHUNK_SIZE];
-    ChunkManager* m_Manager;
+    // ChunkManager* m_Manager;
 };

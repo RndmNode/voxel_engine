@@ -9,7 +9,6 @@ namespace test {
         // : m_ChunkManager(new ChunkManager(m_World_Seed))
     {   
         m_ChunkManager = new ChunkManager(m_World_Seed);
-        // m_ChunkManager->BuildMesh();
         
         // Generate Instance Buffer
         GLCall(glGenBuffers(1, &m_InstanceBuffer));
@@ -73,24 +72,24 @@ namespace test {
 
         if (m_ChunkManager->Update())
         {
-            std::cout << "Updating Chunks\n";
+            // std::cout << "Updating Chunks\n";
             // clear instance buffer
             GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
             GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), nullptr, GL_STATIC_DRAW));
 
-            std::cout << "Updating Instance Buffer\n";
+            // std::cout << "Updating Instance Buffer\n";
             std::vector<glm::vec4> instances;
             for (auto& chunk : m_ChunkManager->m_Chunks)
             {
                 instances.insert(instances.end(), chunk.second->m_Mesh->m_Instances.begin(), chunk.second->m_Mesh->m_Instances.end());
             }
             // update instance buffer
-            std::cout << "Sending data to Instance Buffer\n";
-            GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
+            // std::cout << "Sending data to Instance Buffer\n";
+            // GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_InstanceBuffer));
             GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Voxel::FRONT_FACE_VERTICES) * m_ChunkManager->GetFaces(), &instances[0], GL_STATIC_DRAW));
             GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
-            std::cout << "Finished Updating\n";
+            // std::cout << "Finished Updating\n";
         }
     }
     

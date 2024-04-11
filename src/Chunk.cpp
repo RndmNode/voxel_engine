@@ -2,12 +2,13 @@
 #include "ChunkManager.h"
 #include <iostream>
 
-#define NOISE_RESOLUTION 0.01f
+#define NOISE_RESOLUTION 0.0025f
+#define NOISE_OCTAVES 4
 
 Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkManager* manager)
     :   m_Mesh(new Mesh()),
-        m_Position(position),
-        m_Manager(manager)
+        m_Position(position)
+        // m_Manager(manager)
 {
     // Set Noise
     m_Perlin = siv::PerlinNoise(seed);
@@ -26,7 +27,7 @@ Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkMana
         int height = heightMap[x][z];;
 
         // Set voxels in x & z column based on height value
-        for (int y = 0; y < CHUNK_SIZE; y++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
             if (y > height)
                 m_Voxels[x][y][z] = new Voxel::VoxelData({Voxel::AIR});
@@ -65,7 +66,7 @@ void Chunk::BuildHeightMap()
             // store height value
             heightMap[x][z] = ceil(m_Perlin.normalizedOctave2D_01(
                                     (x + m_Position.x) * NOISE_RESOLUTION, 
-                                    (z + m_Position.z) * NOISE_RESOLUTION, 4) * CHUNK_SIZE);
+                                    (z + m_Position.z) * NOISE_RESOLUTION, NOISE_OCTAVES) * CHUNK_HEIGHT);
         }
     }
 }
@@ -111,55 +112,24 @@ NeighborList Chunk::GetNeighbors(glm::ivec3 voxelPos)
 
     // Add neighbors that are out of bounds
     if (voxelPos.x <= 0)
-    {
         neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::LEFT));
-        // const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x - CHUNK_SIZE, m_Position.z});
-
-        // if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::LEFT,    chunk->second->m_Voxels[CHUNK_SIZE - 1][voxelPos.y][voxelPos.z]->m_Type});
-        // // else                                            neighbors.push_back({Voxel::VoxelFace::LEFT,    Voxel::VoxelType::AIR});
-        // else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::LEFT));
-    }
 
     if (voxelPos.x >= CHUNK_SIZE - 1)
-    {
         neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::RIGHT));
-        // const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x + CHUNK_SIZE, m_Position.z});
-
-        // if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::RIGHT,   chunk->second->m_Voxels[0][voxelPos.y][voxelPos.z]->m_Type});
-        // // else                                            neighbors.push_back({Voxel::VoxelFace::RIGHT,   Voxel::VoxelType::AIR});
-        // else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::RIGHT));
-    }
-
-    // if (voxelPos.y <= 0)                    neighbors.push_back({Voxel::VoxelFace::BOTTOM,  Voxel::VoxelType::AIR});
-    // if (voxelPos.y >= CHUNK_SIZE - 1)       neighbors.push_back({Voxel::VoxelFace::TOP,     Voxel::VoxelType::AIR});
 
     if (voxelPos.z <= 0)
-    {
         neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::BACK));
-        // const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x, m_Position.z - CHUNK_SIZE});
-
-        // if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::BACK,    chunk->second->m_Voxels[voxelPos.x][voxelPos.y][CHUNK_SIZE - 1]->m_Type});
-        // // else                                            neighbors.push_back({Voxel::VoxelFace::BACK,    Voxel::VoxelType::AIR});
-        // else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::BACK));
-    }
 
     if (voxelPos.z >= CHUNK_SIZE - 1)
-    {
         neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::FRONT));
-        // const auto& chunk =  m_Manager->m_Chunks.find({m_Position.x, m_Position.z + CHUNK_SIZE});
-
-        // if (chunk != m_Manager->m_Chunks.end())         neighbors.push_back({Voxel::VoxelFace::FRONT,   chunk->second->m_Voxels[voxelPos.x][voxelPos.y][0]->m_Type});
-        // // else                                            neighbors.push_back({Voxel::VoxelFace::FRONT,   Voxel::VoxelType::AIR});
-        // else                                           neighbors.push_back(GetOutOfBoundsNeighbor({voxelPos.x, voxelPos.y, voxelPos.z}, Voxel::VoxelFace::FRONT));
-    }
 
     // Add neighbors that are in bounds
-    if (voxelPos.x > 0)                   neighbors.push_back({Voxel::VoxelFace::LEFT,    m_Voxels[voxelPos.x- 1][voxelPos.y][voxelPos.z]->m_Type});
-    if (voxelPos.x < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::RIGHT,   m_Voxels[voxelPos.x + 1][voxelPos.y][voxelPos.z]->m_Type});
-    if (voxelPos.y > 0)                   neighbors.push_back({Voxel::VoxelFace::BOTTOM,  m_Voxels[voxelPos.x][voxelPos.y - 1][voxelPos.z]->m_Type});
-    if (voxelPos.y < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::TOP,     m_Voxels[voxelPos.x][voxelPos.y + 1][voxelPos.z]->m_Type});
-    if (voxelPos.z > 0)                   neighbors.push_back({Voxel::VoxelFace::BACK,    m_Voxels[voxelPos.x][voxelPos.y][voxelPos.z - 1]->m_Type});
-    if (voxelPos.z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[voxelPos.x][voxelPos.y][voxelPos.z + 1]->m_Type});
+    if (voxelPos.x > 0)                   neighbors.push_back({Voxel::VoxelFace::LEFT,    m_Voxels[voxelPos.x - 1][voxelPos.y][voxelPos.z]->m_Type}); 
+    if (voxelPos.x < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::RIGHT,   m_Voxels[voxelPos.x + 1][voxelPos.y][voxelPos.z]->m_Type}); 
+    if (voxelPos.y > 0)                   neighbors.push_back({Voxel::VoxelFace::BOTTOM,  m_Voxels[voxelPos.x][voxelPos.y - 1][voxelPos.z]->m_Type}); 
+    if (voxelPos.y < CHUNK_HEIGHT - 1)    neighbors.push_back({Voxel::VoxelFace::TOP,     m_Voxels[voxelPos.x][voxelPos.y + 1][voxelPos.z]->m_Type}); 
+    if (voxelPos.z > 0)                   neighbors.push_back({Voxel::VoxelFace::BACK,    m_Voxels[voxelPos.x][voxelPos.y][voxelPos.z - 1]->m_Type}); 
+    if (voxelPos.z < CHUNK_SIZE - 1)      neighbors.push_back({Voxel::VoxelFace::FRONT,   m_Voxels[voxelPos.x][voxelPos.y][voxelPos.z + 1]->m_Type}); 
 
     return neighbors;
 }
@@ -181,7 +151,7 @@ Neighbor Chunk::GetOutOfBoundsNeighbor(glm::vec3 voxelPos, Voxel::VoxelFace face
         x++;
 
     // Get height value at lookup position
-    int y = ceil(m_Perlin.normalizedOctave2D_01(x * NOISE_RESOLUTION, z * NOISE_RESOLUTION, 4) * CHUNK_SIZE);
+    int y = ceil(m_Perlin.normalizedOctave2D_01(x * NOISE_RESOLUTION, z * NOISE_RESOLUTION, NOISE_OCTAVES) * CHUNK_HEIGHT);
 
     // Return neighbor data
     if (y + 1 > voxelPos.y)
