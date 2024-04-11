@@ -39,30 +39,10 @@ bool ChunkManager::Update()
     return false;
 }
 
-// void ChunkManager::UpdateChunkMeshes(std::vector<ChunkPosition> stack)
-// {   
-//     std::vector<std::thread> threads;
-
-//     // Update chunk meshes
-//     for (auto chunkPos : stack)
-//         threads.push_back(std::thread(&Chunk::BuildMesh, m_Chunks[chunkPos]));
-
-//     // Join threads
-//     for (auto& thread : threads)
-//         thread.join();
-
-//     // Updated Face count
-//     for (auto chunkPos : stack)
-//         m_Faces += m_Chunks[chunkPos]->m_Faces;
-// }
-
 void ChunkManager::LoadChunk(ChunkPosition chunkPos)
 {
-    // while (m_Chunks[chunkPos] == nullptr)
-    //     m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
-    
     g_Mutex.lock();
-    m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed, this);
+    m_Chunks[chunkPos] = new Chunk(chunkPos, m_World_Seed);
     g_Mutex.unlock();
 
     m_Chunks[chunkPos]->BuildMesh();

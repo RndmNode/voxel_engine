@@ -5,7 +5,7 @@
 #include "vendor/PerlinNoise.hpp"
 
 #define CHUNK_SIZE 32
-#define CHUNK_HEIGHT 128
+#define CHUNK_HEIGHT 32
 #define CHUNK_AREA CHUNK_SIZE * CHUNK_SIZE
 #define CHUNK_VOLUME CHUNK_SIZE * CHUNK_SIZE * CHUNK_HEIGHT
 
@@ -35,13 +35,12 @@ struct Neighbor
 
 using NeighborList = std::vector<Neighbor>;
 
-
 class ChunkManager; // Forward declaration to use the ChunkManager class in the Chunk class
 
 class Chunk
 {
 public:
-    Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkManager* manager);
+    Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed);
     ~Chunk();
     void OnRender();
     void OnUpdate();
@@ -54,10 +53,8 @@ private:
     void BuildHeightMap();
     NeighborList GetNeighbors(glm::ivec3 voxelPos);
     Neighbor GetOutOfBoundsNeighbor(glm::vec3 voxelPos, Voxel::VoxelFace face);
-    // siv::PerlinNoise::seed_type m_Seed;
     siv::PerlinNoise m_Perlin;
 
     ChunkPosition m_Position;
     int heightMap[CHUNK_SIZE][CHUNK_SIZE];
-    // ChunkManager* m_Manager;
 };

@@ -2,13 +2,12 @@
 #include "ChunkManager.h"
 #include <iostream>
 
-#define NOISE_RESOLUTION 0.0025f
-#define NOISE_OCTAVES 4
+#define NOISE_RESOLUTION 0.005f
+#define NOISE_OCTAVES 8
 
-Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed, ChunkManager* manager)
+Chunk::Chunk(ChunkPosition position, siv::PerlinNoise::seed_type seed)
     :   m_Mesh(new Mesh()),
         m_Position(position)
-        // m_Manager(manager)
 {
     // Set Noise
     m_Perlin = siv::PerlinNoise(seed);
